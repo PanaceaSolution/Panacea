@@ -123,16 +123,19 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 md:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group" data-nav-item>
-          <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-teal-600 to-teal-400 shadow-md shadow-teal-500/25 group-hover:shadow-teal-500/40 transition-all duration-300">
-            <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
+          <Image
+            src="/assets/logo.png"
+            alt="Panacea Solution Pvt. Ltd."
+            width={220}
+            height={72}
+            className="h-20 w-auto object-contain transition-opacity duration-200 group-hover:opacity-80"
+            priority
+          />
           <div className="leading-tight">
-            <div className="font-heading text-sm font-extrabold tracking-tight text-slate-900 group-hover:text-teal-700 transition-colors">
+            <div className="font-heading text-lg font-extrabold tracking-tight text-slate-900 text-teal-700 transition-colors ">
               Panacea Solution
             </div>
-            <div className="text-[9px] font-medium tracking-wide text-slate-400">
+            <div className="text-[12px] font-medium tracking-wide text-slate-400">
               Pvt. Ltd.
             </div>
           </div>

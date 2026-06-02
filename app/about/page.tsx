@@ -8,9 +8,9 @@ import Footer from "../components/Footer";
 import Link from "next/link";
 
 const stats = [
-  { value: "500+", label: "Projects Delivered", desc: "Across web, mobile & SaaS" },
-  { value: "50+", label: "Enterprise Clients", desc: "From startups to corporations" },
-  { value: "98%", label: "Client Retention Rate", desc: "Long-term partnerships" },
+  { value: "15+", label: "Projects Delivered", desc: "Across web, mobile & SaaS" },
+  { value: "20+", label: "Enterprise Clients", desc: "From startups to corporations" },
+  { value: "95%", label: "Client Retention Rate", desc: "Long-term partnerships" },
   { value: "5+", label: "Years of Excellence", desc: "Founded in 2019" },
 ];
 
@@ -74,46 +74,39 @@ const values = [
 
 const team = [
   {
-    name: "Narayan Sharma",
-    role: "Co-Founder & CEO",
-    desc: "12+ years in product and business strategy. Previously led engineering teams at two Nepal-based fintech startups.",
+    name: "Shreyash Dahal",
+    role: "Chief Executive Officer",
+    desc: "Visionary leader steering Panacea's growth and strategy. Committed to making quality technology accessible to every Nepali business.",
     color: "from-teal-600 to-teal-400",
-    initials: "NS",
+    initials: "SD",
   },
   {
-    name: "Sanjay Adhikari",
-    role: "Chief Technology Officer",
-    desc: "Cloud architect and backend specialist with expertise in AWS, Kubernetes, and distributed systems at scale.",
+    name: "Ujjwal Timalsina",
+    role: "Managing Director",
+    desc: "Drives operational excellence and business development at Panacea, building lasting partnerships across Nepal and beyond.",
     color: "from-indigo-600 to-indigo-400",
-    initials: "SA",
+    initials: "UT",
   },
   {
-    name: "Pooja Gurung",
-    role: "Head of Training Programs",
-    desc: "10+ years in education technology. Designed curricula for 2,000+ successful graduates across multiple disciplines.",
+    name: "Saurashya Singh Rayamajhi",
+    role: "Chief Technology Officer",
+    desc: "Architect of Panacea's technical vision. Leads engineering across web, mobile, and AI — ensuring world-class delivery standards.",
     color: "from-teal-700 to-emerald-500",
-    initials: "PG",
+    initials: "SR",
   },
   {
-    name: "Dipesh Thapa",
-    role: "Lead Full Stack Engineer",
-    desc: "8 years of MERN, Next.js, and mobile development. Oversees technical delivery and engineering standards.",
-    color: "from-slate-600 to-slate-500",
-    initials: "DT",
-  },
-  {
-    name: "Alisha Rana",
-    role: "Head of Product Design",
-    desc: "Award-winning UX designer with a background in cognitive science. Leads design systems and user research.",
+    name: "Himani Bhattarai",
+    role: "Creative Head",
+    desc: "Shapes the brand identity and creative direction of Panacea — blending storytelling, aesthetics, and strategy into every touchpoint.",
     color: "from-violet-600 to-violet-400",
-    initials: "AR",
+    initials: "HB",
   },
   {
-    name: "Rajan Khatri",
-    role: "Business Development Manager",
-    desc: "Builds partnerships and client relationships across Nepal and international markets. 7+ years B2B experience.",
-    color: "from-teal-600 to-cyan-500",
-    initials: "RK",
+    name: "Shushank Gyawali",
+    role: "UI/UX Head",
+    desc: "Leads user experience and interface design, crafting intuitive, beautiful product experiences that delight users and drive results.",
+    color: "from-slate-600 to-teal-500",
+    initials: "SG",
   },
 ];
 

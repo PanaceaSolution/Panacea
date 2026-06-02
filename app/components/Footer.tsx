@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -90,14 +91,20 @@ export default function Footer() {
           {/* Brand column */}
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-lg shadow-teal-900/30">
-                <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <div className="font-heading text-sm font-extrabold tracking-tight text-white">Panacea Solution</div>
-                <div className="text-[9px] font-medium tracking-wide text-slate-500">Pvt. Ltd.</div>
+              <Image
+                src="/assets/logo.png"
+                alt="Panacea Solution Pvt. Ltd."
+                width={180}
+                height={52}
+                className="h-12 w-auto object-contain brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity duration-200"
+              />
+              <div className="leading-tight">
+                <div className="font-heading text-sm font-extrabold tracking-tight text-white">
+                  Panacea Solution
+                </div>
+                <div className="text-[9px] font-medium tracking-wide text-slate-500">
+                  Pvt. Ltd.
+                </div>
               </div>
             </Link>
 

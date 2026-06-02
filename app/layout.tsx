@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s | Panacea Solution",
   },
   description:
-    "Nepal's premier technology company — building enterprise-grade software, delivering AI-powered digital transformation, and training 2,000+ professionals. Custom web apps, mobile development, UI/UX design, and industry-leading training programs.",
+    "Nepal's premier technology company — building enterprise-grade software, delivering AI-powered digital transformation, and training 120+ professionals. Custom web apps, mobile development, UI/UX design, and industry-leading training programs.",
   keywords: [
     "software development Nepal",
     "IT company Kathmandu",
@@ -47,6 +47,11 @@ export const metadata: Metadata = {
     title: "Panacea Solution | Enterprise Software & Tech Training in Nepal",
     description:
       "Build enterprise-grade software and launch tech careers with Nepal's most trusted technology partner.",
+  },
+  icons: {
+    icon: "/assets/logo.png",
+    shortcut: "/assets/logo.png",
+    apple: "/assets/logo.png",
   },
   robots: {
     index: true,

@@ -179,11 +179,11 @@ function Hero() {
               Join a team of passionate engineers, designers, and educators who are building Nepal's tech future. We offer meaningful work, real growth, and a culture that respects your time.
             </p>
             <div className="flex flex-wrap gap-3 pt-1">
-              <Link href="#openings" className="btn-primary glow-teal-btn">
-                View Open Positions
-              </Link>
-              <Link href="/contact" className="btn-ghost-dark">
+              <Link href="/contact" className="btn-primary glow-teal-btn">
                 Send Your Resume
+              </Link>
+              <Link href="#openings" className="btn-ghost-dark">
+                View Past Roles
               </Link>
             </div>
           </motion.div>
@@ -325,12 +325,12 @@ function Openings() {
     <section id="openings" className="bg-slate-50/50 py-24">
       <div className="mx-auto max-w-5xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <span className="section-badge">Open Positions</span>
+          <span className="section-badge">Positions</span>
           <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
-            Current Openings
+            No Open Positions Right Now
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
-            We're growing — and always looking for excellent people who want to build great things.
+            All current roles are filled. Drop us your resume and we'll reach out when a matching opportunity opens up.
           </p>
         </div>
 
@@ -342,45 +342,41 @@ function Openings() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.07 }}
-              className="card-light p-5 hover:border-teal-200 transition-all duration-300 group"
+              className="card-light p-5 opacity-60"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex-1 space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-heading text-sm font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
+                    <h3 className="font-heading text-sm font-bold text-slate-500 line-through decoration-slate-300">
                       {role.title}
                     </h3>
-                    <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-bold text-teal-600 ring-1 ring-teal-200">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-400">
                       {role.dept}
                     </span>
-                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium text-slate-500">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium text-slate-400">
                       {role.type}
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-3 text-[10px] text-slate-400">
                     <span className="flex items-center gap-1">📍 {role.location}</span>
                     <span>💼 {role.exp}</span>
-                    <span className="text-slate-300">Posted {role.posted}</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {role.tags.map((tag) => (
-                      <span key={tag} className="tag-pill">{tag}</span>
+                      <span key={tag} className="tag-pill opacity-60">{tag}</span>
                     ))}
                   </div>
                 </div>
-                <Link
-                  href="/contact"
-                  className="shrink-0 rounded-xl bg-teal-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-teal-700 transition-colors"
-                >
-                  Apply Now
-                </Link>
+                <span className="shrink-0 rounded-xl bg-slate-100 px-5 py-2.5 text-xs font-bold text-slate-400 cursor-not-allowed select-none">
+                  Position Closed
+                </span>
               </div>
             </motion.div>
           ))}
         </div>
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-slate-500">Don't see a role that fits? We love talented generalists.</p>
+          <p className="text-sm text-slate-500">Interested in future opportunities? We'd still love to hear from you.</p>
           <Link
             href="/contact"
             className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-teal-600 hover:text-teal-700 transition-colors"
@@ -434,8 +430,8 @@ function CTA() {
           We're always interested in connecting with talented engineers, designers, and educators — even if there isn't an open role that fits today.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link href="#openings" className="btn-primary glow-teal-btn">
-            See Open Roles
+          <Link href="/contact" className="btn-primary glow-teal-btn">
+            Send Your Resume
           </Link>
           <Link href="/contact" className="btn-ghost-dark">
             Say Hello

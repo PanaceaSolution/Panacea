@@ -177,7 +177,7 @@ export default function CoursesPage() {
       <CoursesGrid />
       <Benefits />
       <Batches />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <CTA />
       <Footer />
     </div>
@@ -212,7 +212,7 @@ function Hero() {
 
           {/* Stats */}
           <div className="flex flex-wrap justify-center gap-6 text-center pt-2">
-            {[["2000+", "Students Trained"], ["100%", "Placement Assistance"], ["4.7★", "Average Rating"]].map(([v, l]) => (
+            {[["120+", "Students Trained"], ["100%", "Placement Assistance"], ["4.7★", "Average Rating"]].map(([v, l]) => (
               <div key={l}>
                 <div className="font-heading text-2xl font-black text-teal-400">{v}</div>
                 <div className="text-xs text-slate-500">{l}</div>
