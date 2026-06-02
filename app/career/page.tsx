@@ -1,111 +1,140 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { AnimatedCounter } from "../components/AnimatedCounter";
+import { ScrollReveal } from "../components/ScrollReveal";
 import Link from "next/link";
+import { useState } from "react";
 
 const stats = [
-  { value: "50+", label: "Team Members", desc: "Collaborating across major teams" },
-  { value: "95%", label: "Employee Satisfaction", desc: "Valuing ownership and balance" },
-  { value: "15", label: "Countries Represented", desc: "Serving global clients" },
-  { value: "4.8/5", label: "Glassdoor Rating", desc: "Recognized as a leading employer" },
+  { value: "50+", label: "Team Members", desc: "Across engineering, design & training" },
+  { value: "4.8/5", label: "Glassdoor Rating", desc: "Recognized as a top employer" },
+  { value: "95%", label: "Employee Retention", desc: "We invest in our people" },
+  { value: "15+", label: "Countries Served", desc: "Global client network" },
 ];
 
 const perks = [
   {
-    title: "Continuous Learning & Growth",
-    desc: "We invest in your development with a dedicated learning budget, access to industry conferences, and hands-on skill-building programs.",
-    icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
+    title: "Learning & Development Budget",
+    desc: "Annual Rs. 50,000 budget per employee for courses, certifications, books, and conferences. We invest in your growth.",
+    icon: "📚",
   },
   {
-    title: "Flexible Work-Life Harmony",
-    desc: "Enjoy flexible working hours, remote work opportunities, and a generous time-off policy to help you maintain balance and recharge.",
-    icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
+    title: "Flexible Work Arrangements",
+    desc: "Hybrid and remote-friendly setup with flexible hours. We trust you to manage your time and deliver great work.",
+    icon: "🏠",
   },
   {
-    title: "Dedicated Innovation Time",
-    desc: "Take 20% of your time to explore new ideas, build passion projects, or experiment with the latest tech – we encourage creative freedom.",
-    icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-      </svg>
-    ),
+    title: "20% Innovation Time",
+    desc: "One day per week to explore new ideas, build side projects, or experiment with emerging technologies.",
+    icon: "🔬",
   },
   {
-    title: "Vibrant Team Culture",
-    desc: "Work in a collaborative, inclusive environment where regular team activities, open communication, and creativity are part of the culture.",
-    icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ),
+    title: "Competitive Compensation",
+    desc: "Market-rate salaries with performance-based bonuses, annual reviews, and transparent salary bands.",
+    icon: "💰",
   },
   {
-    title: "Career Advancement",
-    desc: "Follow clear growth paths with mentorship, upskilling opportunities, and leadership development – we grow together, every step of the way.",
-    icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-      </svg>
-    ),
+    title: "Career Growth Framework",
+    desc: "Clear progression paths from junior to senior to lead — with structured mentorship and quarterly reviews.",
+    icon: "📈",
+  },
+  {
+    title: "Health & Wellness",
+    desc: "Medical insurance coverage, wellness allowance, and mental health support for all full-time employees.",
+    icon: "❤️",
   },
 ];
 
 const cultureValues = [
-  { title: "Innovation First", desc: "We stay ahead by embracing emerging technologies, encouraging experimentation, and solving problems with a creative mindset.", img: "/services/it-design.jpg" },
-  { title: "Collaborative Spirit", desc: "Great ideas are born from teamwork. We foster an open, inclusive space where communication is clear and collaboration is constant.", img: "/services/outsourcing.jpg" },
-  { title: "Continuous Learning", desc: "In tech, change is constant — that's why we champion curiosity, upskilling and growth through internal training, courses, and mentorship.", img: "/services/uiux.jpg" },
-  { title: "Integrity & Ownership", desc: "We take pride in our work and hold ourselves accountable. Trust, transparency, and ethical tech practices are at our core.", img: "/services/web-dev.jpg" },
-  { title: "Diversity in Thinking", desc: "We value diverse perspectives — across cultures, disciplines, and experiences — to build better, more inclusive solutions.", img: "/services/marketing.jpg" },
-  { title: "Customer-Centric Thinking", desc: "From course design to software delivery, we put users first. Understanding real-world needs drives how we build, teach, and support.", img: "/services/app-dev.jpg" },
+  {
+    title: "Build What Matters",
+    desc: "We focus on work that creates real impact — for clients, for students, and for Nepal's tech ecosystem. Every project has a purpose.",
+    image: "/services/web-dev.jpg",
+  },
+  {
+    title: "Collaborate Openly",
+    desc: "No silos. We share context freely, give direct feedback, and believe the best ideas come from diverse perspectives working together.",
+    image: "/services/outsourcing.jpg",
+  },
+  {
+    title: "Keep Learning",
+    desc: "Technology evolves fast. We stay ahead by encouraging curiosity, championing upskilling, and sharing knowledge across the team.",
+    image: "/services/it-design.jpg",
+  },
+  {
+    title: "Own Your Work",
+    desc: "We hire adults and trust them. Take ownership, make calls, and learn from outcomes — we value initiative over permission-seeking.",
+    image: "/services/uiux.jpg",
+  },
+  {
+    title: "Include Everyone",
+    desc: "Diverse teams build better products. We actively cultivate inclusion across gender, background, experience level, and discipline.",
+    image: "/services/marketing.jpg",
+  },
+  {
+    title: "Serve the Customer",
+    desc: "Whether it's a client, a student, or a colleague — we ask what they actually need before jumping to solutions.",
+    image: "/services/app-dev.jpg",
+  },
 ];
 
 const openings = [
   {
-    title: "Senior Full Stack Developer",
+    title: "Senior Full Stack Engineer",
     dept: "Engineering",
     type: "Full Time",
-    exp: "5+ years",
-    posted: "Posted 2 days ago",
-    tags: ["React/Next.js experience", "Nodejs js backend development", "AWS/Azure experience", "+4 more"],
+    exp: "4+ years",
+    posted: "2 days ago",
+    location: "Kathmandu / Remote",
+    tags: ["React / Next.js", "Node.js & REST APIs", "AWS / cloud infra", "TypeScript"],
   },
   {
-    title: "UI UX Designer",
+    title: "UI/UX Product Designer",
     dept: "Design",
     type: "Full Time",
     exp: "2+ years",
-    posted: "Posted 1 week ago",
-    tags: ["Figma proficiency", "User Research Experience", "User Research", "+2 more"],
+    posted: "1 week ago",
+    location: "Kathmandu",
+    tags: ["Figma proficiency", "Design systems", "User research", "Prototyping"],
   },
   {
-    title: "DevOps Engineer",
+    title: "DevOps & Cloud Engineer",
     dept: "Engineering",
     type: "Full Time",
     exp: "3+ years",
-    posted: "Posted 5 days ago",
-    tags: ["React/Next.js experience", "Nodejs js backend development", "AWS/Azure experience", "+3 more"],
+    posted: "5 days ago",
+    location: "Kathmandu / Hybrid",
+    tags: ["AWS / Azure", "Docker & Kubernetes", "Terraform / IaC", "CI/CD pipelines"],
   },
   {
-    title: "Business Development Representative",
+    title: "Training Instructor — Full Stack",
+    dept: "Training",
+    type: "Full Time",
+    exp: "3+ years",
+    posted: "3 days ago",
+    location: "Kathmandu",
+    tags: ["MERN stack expertise", "Curriculum design", "Mentoring experience", "Communication skills"],
+  },
+  {
+    title: "Business Development Executive",
     dept: "Sales",
     type: "Full Time",
     exp: "2+ years",
-    posted: "Posted 1 week ago",
-    tags: ["B2B sales Experience", "Technology industry knowledge", "CRM proficiency", "+2 more"],
+    posted: "1 week ago",
+    location: "Kathmandu",
+    tags: ["B2B sales", "Tech industry knowledge", "CRM tools", "Proposal writing"],
   },
 ];
 
 const processSteps = [
-  { num: "01", title: "Apply", desc: "Submit your application and resume through our online portal." },
-  { num: "02", title: "Review", desc: "Our team reviews your application and background." },
-  { num: "03", title: "Interview", desc: "Technical and cultural fit interviews with the team." },
-  { num: "04", title: "Offer", desc: "Final decision and offer discussion." },
+  { num: "01", title: "Apply Online", desc: "Submit your application with your CV and portfolio via our online form." },
+  { num: "02", title: "Resume Review", desc: "Our team reviews every application within 5 business days." },
+  { num: "03", title: "Technical Screen", desc: "A 45-minute technical or portfolio review call with a senior team member." },
+  { num: "04", title: "Team Interview", desc: "Meet the team — technical depth + cultural alignment, no trick questions." },
+  { num: "05", title: "Offer & Join", desc: "Fast, transparent offer process. Onboarding starts within 2 weeks of acceptance." },
 ];
 
 export default function CareerPage() {
@@ -118,6 +147,7 @@ export default function CareerPage() {
       <Culture />
       <Openings />
       <Process />
+      <CTA />
       <Footer />
     </div>
   );
@@ -125,48 +155,61 @@ export default function CareerPage() {
 
 function Hero() {
   return (
-    <section className="border-b border-slate-100 bg-white py-20">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2 lg:px-8">
-        <div className="space-y-6">
-          <span className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-4 py-1.5 text-xs font-semibold text-teal-700 ring-1 ring-teal-200">
-            Join Our Team
-          </span>
-          <h1 className="font-heading text-4xl font-black leading-tight text-slate-900 md:text-5xl">
-            Build Your Career<br />
-            <span className="text-gradient">With Us</span>
-          </h1>
-          <p className="text-sm leading-relaxed text-slate-600">
-            Be a part of something meaningful. Join our team of passionate professionals who are shaping the future of technology and creativity. We offer competitive benefits, continuous learning opportunities, and a work culture that values innovation, collaboration, and growth.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Link href="#openings" className="rounded-full bg-teal-600 px-7 py-3.5 text-xs font-bold text-white shadow-lg hover:bg-teal-700 transition-all">
-              View Open Position
-            </Link>
-            <Link href="/contact" className="rounded-full border border-slate-300 px-7 py-3.5 text-xs font-bold text-slate-700 hover:border-teal-400 hover:text-teal-600 transition-all">
-              Get In Touch!
-            </Link>
-          </div>
-        </div>
-
-        {/* Right illustration */}
-        <div className="relative">
-          <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-teal-50 to-slate-100 shadow-xl border border-slate-100">
-            <div className="flex h-72 w-full items-center justify-center p-8">
-              <div className="text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-teal-600 shadow-lg">
-                  <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div className="text-lg font-black text-slate-800">Join Our Team</div>
-                <div className="mt-1 text-sm text-slate-500">Shape the future with us</div>
-              </div>
+    <section className="relative overflow-hidden bg-[#020817] py-24 md:py-32">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-teal-600/15 blur-[100px]" />
+        <div className="absolute left-0 bottom-0 h-[300px] w-[400px] rounded-full bg-indigo-600/10 blur-[80px]" />
+        <div className="absolute inset-0 bg-grid-dark" />
+      </div>
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 15 }}
+            className="space-y-6"
+          >
+            <span className="section-badge-dark">We're Hiring</span>
+            <h1 className="font-heading text-5xl md:text-6xl font-black text-white leading-tight">
+              Build Your Best Work
+              <br />
+              <span className="text-gradient-hero">With Our Team</span>
+            </h1>
+            <p className="text-base leading-relaxed text-slate-400">
+              Join a team of passionate engineers, designers, and educators who are building Nepal's tech future. We offer meaningful work, real growth, and a culture that respects your time.
+            </p>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link href="#openings" className="btn-primary glow-teal-btn">
+                View Open Positions
+              </Link>
+              <Link href="/contact" className="btn-ghost-dark">
+                Send Your Resume
+              </Link>
             </div>
-          </div>
-          <div className="absolute -right-4 -top-4 rounded-2xl bg-white p-4 shadow-xl border border-slate-100 animate-float">
-            <div className="text-xs font-bold text-slate-700">⭐ 4.8+</div>
-            <div className="text-[10px] text-slate-400">Employer Rating</div>
-          </div>
+          </motion.div>
+
+          {/* Culture values preview */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.15 }}
+            className="space-y-3"
+          >
+            {[
+              { icon: "🏆", title: "4.8★ Glassdoor Rating", desc: "Consistently rated as a top employer in Nepal" },
+              { icon: "🌱", title: "Annual Learning Budget", desc: "Rs. 50,000/year for courses, certs & conferences" },
+              { icon: "⚡", title: "20% Innovation Time", desc: "One day per week for your own explorations" },
+              { icon: "🌍", title: "Global Project Exposure", desc: "Work with clients across 15+ countries" },
+            ].map((item) => (
+              <div key={item.title} className="card-dark flex items-start gap-3.5 p-4">
+                <span className="text-xl">{item.icon}</span>
+                <div>
+                  <div className="text-sm font-bold text-white">{item.title}</div>
+                  <div className="text-xs text-slate-400">{item.desc}</div>
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
@@ -175,21 +218,22 @@ function Hero() {
 
 function Stats() {
   return (
-    <section className="border-b border-slate-100 bg-slate-50/50 py-14">
+    <section className="border-b border-slate-100 bg-white py-14">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-8 text-center">
-          <h2 className="font-heading text-xl font-bold text-slate-700">
-            Why Choose <span className="text-teal-600">Panacea Solutions Pvt. Ltd.</span>?
-          </h2>
-          <p className="mt-1 text-xs text-slate-400">Our numbers speak for the culture we&apos;ve built and the people who power it.</p>
-        </div>
         <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-              <div className="text-3xl font-black text-teal-600 md:text-4xl">{stat.value}</div>
-              <div className="mt-2 text-sm font-bold text-slate-700">{stat.label}</div>
-              <p className="mt-1 text-[11px] text-slate-400">{stat.desc}</p>
-            </div>
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="card-light p-6 text-center"
+            >
+              <AnimatedCounter value={s.value} className="font-heading text-3xl font-black text-teal-600 md:text-4xl" />
+              <div className="mt-2 text-sm font-bold text-slate-700">{s.label}</div>
+              <p className="mt-1 text-xs text-slate-400">{s.desc}</p>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -199,25 +243,35 @@ function Stats() {
 
 function Perks() {
   return (
-    <section className="border-b border-slate-100 bg-white py-20">
+    <section className="bg-slate-50/50 py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-heading text-3xl font-black text-slate-900 md:text-4xl">Benefits &amp; Perks</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">
-            At Panacea Solution Pvt. Ltd., we believe in giving people from continuous learning to flexible work options, we create an environment where innovation thrives and careers grow.
+          <span className="section-badge">Benefits</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
+            What You'll Get
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            We believe in investing in our team — financially, professionally, and personally.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {perks.map((perk) => (
-            <div key={perk.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50">
-                {perk.icon}
-              </div>
-              <h3 className="font-heading text-sm font-bold text-slate-800">{perk.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">{perk.desc}</p>
-            </div>
-          ))}
-        </div>
+        <ScrollReveal animation="stagger">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {perks.map((perk) => (
+              <motion.div
+                key={perk.title}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="card-light p-6 flex gap-4"
+              >
+                <span className="text-2xl">{perk.icon}</span>
+                <div>
+                  <h3 className="font-heading text-sm font-bold text-slate-800">{perk.title}</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-slate-500">{perk.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -225,25 +279,42 @@ function Perks() {
 
 function Culture() {
   return (
-    <section className="border-b border-slate-100 bg-slate-50/50 py-20">
+    <section className="border-y border-slate-100 bg-white py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-heading text-3xl font-black text-slate-900 md:text-4xl">Our Culture</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">The values that guide our work, define our mindset, and shape the environment where innovation and learning thrive.</p>
+          <span className="section-badge">Our Culture</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
+            How We Work Together
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            The principles that define our environment and shape how decisions get made.
+          </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cultureValues.map((item) => (
-            <div key={item.title} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group">
-              <div className="relative h-44 overflow-hidden bg-slate-100">
-                <img src={item.img} alt={item.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div className="p-5">
-                <h3 className="font-heading text-sm font-bold text-slate-800">{item.title}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-slate-500">{item.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <ScrollReveal animation="stagger">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {cultureValues.map((item) => (
+              <motion.div
+                key={item.title}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="card-light overflow-hidden group"
+              >
+                <div className="relative h-40 overflow-hidden bg-slate-100">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-heading text-sm font-bold text-slate-800">{item.title}</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-slate-500">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -251,53 +322,70 @@ function Culture() {
 
 function Openings() {
   return (
-    <section id="openings" className="border-b border-slate-100 bg-white py-20">
+    <section id="openings" className="bg-slate-50/50 py-24">
       <div className="mx-auto max-w-5xl px-6 lg:px-8">
-        <div className="mb-3 text-center">
-          <h2 className="font-heading text-3xl font-black text-slate-900 md:text-4xl">Open Positions</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">Find your next opportunity with us. We&apos;re always looking for talented individuals to join our team.</p>
+        <div className="mb-12 text-center">
+          <span className="section-badge">Open Positions</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
+            Current Openings
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            We're growing — and always looking for excellent people who want to build great things.
+          </p>
         </div>
 
-        <div className="mt-8 space-y-4">
-          {openings.map((role) => (
-            <div key={role.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-teal-200 hover:shadow-md transition-all duration-300">
+        <div className="space-y-4">
+          {openings.map((role, idx) => (
+            <motion.div
+              key={role.title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.07 }}
+              className="card-light p-5 hover:border-teal-200 transition-all duration-300 group"
+            >
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="space-y-2">
+                <div className="flex-1 space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-heading text-sm font-bold text-slate-800">{role.title}</h3>
-                    <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-bold text-teal-600 ring-1 ring-teal-200">{role.dept}</span>
-                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium text-slate-500">{role.type}</span>
+                    <h3 className="font-heading text-sm font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
+                      {role.title}
+                    </h3>
+                    <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-bold text-teal-600 ring-1 ring-teal-200">
+                      {role.dept}
+                    </span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium text-slate-500">
+                      {role.type}
+                    </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-400">
-                    <span>📍 Kathmandu</span>
-                    <span>•</span>
-                    <span>🕐 Full-time</span>
-                    <span>•</span>
+                  <div className="flex flex-wrap items-center gap-3 text-[10px] text-slate-400">
+                    <span className="flex items-center gap-1">📍 {role.location}</span>
                     <span>💼 {role.exp}</span>
-                    <span>•</span>
-                    <span className="text-slate-300">{role.posted}</span>
+                    <span className="text-slate-300">Posted {role.posted}</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {role.tags.map((tag) => (
-                      <span key={tag} className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">{tag}</span>
+                      <span key={tag} className="tag-pill">{tag}</span>
                     ))}
                   </div>
                 </div>
-                <Link href="/contact" className="shrink-0 rounded-lg bg-teal-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-teal-700 transition-colors">
+                <Link
+                  href="/contact"
+                  className="shrink-0 rounded-xl bg-teal-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-teal-700 transition-colors"
+                >
                   Apply Now
                 </Link>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-400">
-          Don&apos;t see a position that fits? We&apos;re always interested in hearing from talented individuals.
-        </p>
-        <div className="mt-2 text-center">
-          <Link href="/contact" className="inline-flex items-center gap-1 text-xs font-bold text-teal-600 hover:text-teal-700 transition-colors">
-            Send Us Your Resume
-            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+        <div className="mt-8 text-center">
+          <p className="text-sm text-slate-500">Don't see a role that fits? We love talented generalists.</p>
+          <Link
+            href="/contact"
+            className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-teal-600 hover:text-teal-700 transition-colors"
+          >
+            Send us your resume →
           </Link>
         </div>
       </div>
@@ -307,22 +395,51 @@ function Openings() {
 
 function Process() {
   return (
-    <section className="bg-slate-50/50 py-20">
+    <section className="border-y border-slate-100 bg-white py-20">
       <div className="mx-auto max-w-5xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-heading text-3xl font-black text-slate-900 md:text-4xl">Application Process</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">Our straightforward hiring process designed to find the best fit for both sides.</p>
+          <span className="section-badge">Application Process</span>
+          <h2 className="mt-4 font-heading text-3xl md:text-4xl font-black text-slate-900">
+            How We Hire
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            Transparent, fast, and respectful of your time. No surprise rounds or drawn-out processes.
+          </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {processSteps.map((step) => (
-            <div key={step.num} className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm hover:border-teal-200 hover:shadow-md transition-all duration-300">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-sm font-black text-white shadow-md">
-                {step.num}
-              </div>
-              <h4 className="font-heading text-sm font-bold text-slate-800">{step.title}</h4>
+            <div key={step.num} className="card-light p-6 text-center group">
+              <div className="mx-auto step-number">{step.num}</div>
+              <h4 className="mt-4 font-heading text-sm font-bold text-slate-800">{step.title}</h4>
               <p className="mt-2 text-xs leading-relaxed text-slate-500">{step.desc}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CTA() {
+  return (
+    <section className="relative overflow-hidden bg-[#020817] py-20">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 h-[300px] w-[500px] rounded-full bg-teal-600/15 blur-[100px]" />
+      </div>
+      <div className="relative mx-auto max-w-3xl px-6 text-center lg:px-8">
+        <h2 className="font-heading text-4xl font-black text-white">
+          Ready to do the best work of your career?
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">
+          We're always interested in connecting with talented engineers, designers, and educators — even if there isn't an open role that fits today.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <Link href="#openings" className="btn-primary glow-teal-btn">
+            See Open Roles
+          </Link>
+          <Link href="/contact" className="btn-ghost-dark">
+            Say Hello
+          </Link>
         </div>
       </div>
     </section>

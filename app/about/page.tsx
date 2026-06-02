@@ -1,87 +1,152 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { AnimatedCounter } from "../components/AnimatedCounter";
+import { ScrollReveal } from "../components/ScrollReveal";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Link from "next/link";
 
-const coreValues = [
+const stats = [
+  { value: "500+", label: "Projects Delivered", desc: "Across web, mobile & SaaS" },
+  { value: "50+", label: "Enterprise Clients", desc: "From startups to corporations" },
+  { value: "98%", label: "Client Retention Rate", desc: "Long-term partnerships" },
+  { value: "5+", label: "Years of Excellence", desc: "Founded in 2019" },
+];
+
+const values = [
   {
-    title: "Our Mission",
-    desc: "To empower businesses with innovative technology solutions that drive growth and success in the digital age.",
+    title: "Engineering Excellence",
+    desc: "We hold every line of code to the same standard we'd demand for ourselves. Clean architecture, rigorous testing, and maintainable systems — no shortcuts.",
     icon: (
-      <svg className="h-7 w-7 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
       </svg>
     ),
   },
   {
-    title: "Our Vision",
-    desc: "To be the leading technology partner that transforms ideas into reality through cutting-edge solutions.",
+    title: "Client Partnership",
+    desc: "We're not a vendor — we're your technology partner. We invest in understanding your business so our solutions drive real outcomes.",
     icon: (
-      <svg className="h-7 w-7 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Education Impact",
+    desc: "We believe in growing Nepal's tech talent pool. Every training cohort we run creates ripple effects — skilled professionals build better businesses.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    ),
+  },
+  {
+    title: "Radical Transparency",
+    desc: "Open communication, honest timelines, and no surprises. You always know what we're building, why, and when it ships.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
       </svg>
     ),
   },
   {
-    title: "Our Values",
-    desc: "Excellence, innovation, integrity, and customer-centricity guide everything we do.",
+    title: "Continuous Innovation",
+    desc: "We stay ahead of emerging technologies so our clients always benefit from modern architectures and current best practices.",
     icon: (
-      <svg className="h-7 w-7 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
       </svg>
     ),
   },
   {
-    title: "Our Reach",
-    desc: "Serving clients globally with 24/7 support and localized expertise across multiple time zones.",
+    title: "Community First",
+    desc: "As a Nepali company, we're proud to contribute to the local tech ecosystem — through hiring, mentorship, and community programs.",
     icon: (
-      <svg className="h-7 w-7 text-teal-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
       </svg>
     ),
   },
 ];
 
-const stats = [
-  { value: "150+", label: "Projects Completed", desc: "Successfully delivered projects" },
-  { value: "50+", label: "Happy Clients", desc: "Satisfied customers worldwide" },
-  { value: "98%", label: "Success Rate", desc: "Project completion rate" },
-  { value: "5+", label: "Years Experience", desc: "In the technology industry" },
-];
-
 const team = [
-  { name: "David Richardson", role: "Chief Executive Officer", desc: "15+ years of experience in technology leadership and business strategy.", color: "from-teal-600 to-teal-400" },
-  { name: "David Richardson", role: "Chief Technology Officer", desc: "Expert in cloud architecture and enterprise software development.", color: "from-slate-600 to-slate-400" },
-  { name: "David Richardson", role: "Managing Director", desc: "15+ years of experience in technology leadership and business strategy.", color: "from-teal-700 to-teal-500" },
-  { name: "David Richardson", role: "Project Manager", desc: "Agile expert ensuring projects are delivered on time and within budget.", color: "from-slate-700 to-slate-500" },
-  { name: "David Richardson", role: "Human Resource", desc: "15+ years of experience in technology leadership and business strategy.", color: "from-teal-500 to-emerald-400" },
-  { name: "David Richardson", role: "Head of Design", desc: "Award-winning designer with a passion for user-centered design.", color: "from-teal-600 to-teal-800" },
+  {
+    name: "Narayan Sharma",
+    role: "Co-Founder & CEO",
+    desc: "12+ years in product and business strategy. Previously led engineering teams at two Nepal-based fintech startups.",
+    color: "from-teal-600 to-teal-400",
+    initials: "NS",
+  },
+  {
+    name: "Sanjay Adhikari",
+    role: "Chief Technology Officer",
+    desc: "Cloud architect and backend specialist with expertise in AWS, Kubernetes, and distributed systems at scale.",
+    color: "from-indigo-600 to-indigo-400",
+    initials: "SA",
+  },
+  {
+    name: "Pooja Gurung",
+    role: "Head of Training Programs",
+    desc: "10+ years in education technology. Designed curricula for 2,000+ successful graduates across multiple disciplines.",
+    color: "from-teal-700 to-emerald-500",
+    initials: "PG",
+  },
+  {
+    name: "Dipesh Thapa",
+    role: "Lead Full Stack Engineer",
+    desc: "8 years of MERN, Next.js, and mobile development. Oversees technical delivery and engineering standards.",
+    color: "from-slate-600 to-slate-500",
+    initials: "DT",
+  },
+  {
+    name: "Alisha Rana",
+    role: "Head of Product Design",
+    desc: "Award-winning UX designer with a background in cognitive science. Leads design systems and user research.",
+    color: "from-violet-600 to-violet-400",
+    initials: "AR",
+  },
+  {
+    name: "Rajan Khatri",
+    role: "Business Development Manager",
+    desc: "Builds partnerships and client relationships across Nepal and international markets. 7+ years B2B experience.",
+    color: "from-teal-600 to-cyan-500",
+    initials: "RK",
+  },
 ];
 
-const story = [
+const milestones = [
   {
-    title: "The Beginning",
-    text: [
-      "In 2019, Panacea Solution Pvt. Ltd. started with a simple mission: \"To help businesses grow by using the right technology.\"",
-      "What began as a small group of dedicated developers with big dreams has now become a dynamic team that builds smart solutions for clients across industries.",
-      "We believed that technology shouldn't be complicated—it should solve problems. That belief still guides everything we do.",
-    ],
+    year: "2019",
+    title: "Founded",
+    desc: "Panacea Solution Pvt. Ltd. was founded in Kathmandu with a three-person core team and a simple mission: make quality technology accessible to Nepali businesses.",
   },
   {
-    title: "Growing Together",
-    text: [
-      "As our team grew, so did our services. We added designers, strategists, and consultants who shared the same passion for creating meaningful digital experiences. Every new project brought a new lesson, and every challenge made us better.",
-      "Today, Panacea isn't just a development company—we're your digital partner. Whether it's building websites, apps, business platforms, or customized solutions, we bring clarity and creativity to every step.",
-    ],
+    year: "2020",
+    title: "First 20 Clients",
+    desc: "Despite global challenges, we delivered 20+ projects ranging from e-commerce platforms to custom ERP solutions, earning our first long-term retainers.",
   },
   {
-    title: "Driven by Innovation",
-    text: [
-      "We never stop learning. From new tools and technologies to user behavior and design thinking, we constantly adapt to deliver better results for our clients.",
-      "Our journey so far has been exciting—but we know the best is yet to come. We're proud to have helped startups, SMEs, and enterprises grow—and we're just getting started.",
-    ],
+    year: "2021",
+    title: "Training Division Launch",
+    desc: "Launched our first training cohort with 25 students. The program's 100% placement success rate validated our education model. We ran four cohorts in year one.",
+  },
+  {
+    year: "2022",
+    title: "100 Projects Milestone",
+    desc: "Crossed 100 delivered projects. Expanded the team to 30+ professionals and opened a dedicated training center in New Baneshwor.",
+  },
+  {
+    year: "2023",
+    title: "1,000 Students Trained",
+    desc: "Our training programs hit a landmark: 1,000 graduates placed in tech roles at companies like Leapfrog, CloudFactory, Fusemachines, and F1Soft.",
+  },
+  {
+    year: "2024–25",
+    title: "Enterprise & Growth Phase",
+    desc: "Scaling to serve enterprise clients with dedicated pods, SaaS products, and expanded training tracks including AI/ML and cloud engineering.",
   },
 ];
 
@@ -90,10 +155,11 @@ export default function AboutPage() {
     <div className="bg-white text-slate-800">
       <Navbar />
       <Hero />
-      <CoreValues />
       <Stats />
+      <Values />
       <Team />
       <Story />
+      <CTA />
       <Footer />
     </div>
   );
@@ -101,106 +167,63 @@ export default function AboutPage() {
 
 function Hero() {
   return (
-    <section className="border-b border-slate-100 bg-white py-20">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 md:grid-cols-2 lg:px-8">
-        <motion.div 
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ type: "spring", stiffness: 80, damping: 15 }}
-          className="space-y-6"
-        >
-          <span className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-4 py-1.5 text-xs font-semibold text-teal-700 ring-1 ring-teal-200">
-            About our Company
-          </span>
-          <h1 className="font-heading text-4xl font-black leading-tight text-slate-900 md:text-5xl">
-            We Build{" "}
-            <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600">Digital Excellence</span>
-          </h1>
-          <p className="text-sm leading-relaxed text-slate-600">
-            Founded with a passion for technology and innovation, we&apos;ve been helping businesses transform their digital presence and achieve their goals through cutting-edge solutions.
-          </p>
-          <p className="text-sm leading-relaxed text-slate-500">
-            Our team of experienced professionals combines technical expertise with creative thinking to deliver solutions that not only meet current needs but also prepares businesses for future challenges.
-          </p>
-        </motion.div>
-
-        {/* Company values image placeholder */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.2 }}
-          className="relative"
-        >
-          <div className="overflow-hidden rounded-3xl shadow-xl border border-slate-100">
-            <div className="flex h-72 w-full flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-teal-50 p-8">
-              <div className="mb-4 text-center">
-                <div className="mb-2 text-2xl font-black text-slate-700 tracking-tight"># COMPANY</div>
-                <div className="text-2xl font-black text-slate-700 tracking-tight">VALUES</div>
-              </div>
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                {["Respect", "Innovation", "Growth", "Integrity", "Quality", "Teamwork", "Customer", "Agility", "Trust"].map((v, idx) => (
-                  <motion.div 
-                    key={v}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + idx * 0.05 }}
-                    className="rounded-lg bg-white px-2 py-1.5 text-center text-[10px] font-semibold text-slate-600 shadow-sm border border-slate-100"
-                  >
-                    {v}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.div>
+    <section className="relative overflow-hidden bg-[#020817] py-24 md:py-32">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute right-0 top-0 h-[400px] w-[500px] rounded-full bg-teal-600/15 blur-[100px]" />
+        <div className="absolute left-0 bottom-0 h-[300px] w-[400px] rounded-full bg-indigo-600/10 blur-[80px]" />
+        <div className="absolute inset-0 bg-grid-dark" />
       </div>
-    </section>
-  );
-}
 
-function CoreValues() {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 15 }}
+            className="space-y-6"
+          >
+            <span className="section-badge-dark">About Our Company</span>
+            <h1 className="font-heading text-5xl md:text-6xl font-black text-white leading-tight">
+              Building Nepal's
+              <br />
+              <span className="text-gradient-hero">Tech Future</span>
+            </h1>
+            <p className="text-base leading-relaxed text-slate-400">
+              Founded in 2019, Panacea Solution has grown from a three-person startup into a full-spectrum technology company — delivering enterprise software, AI solutions, and training programs that have transformed thousands of careers.
+            </p>
+            <p className="text-sm leading-relaxed text-slate-500">
+              We believe that great technology should be accessible to every business, regardless of size — and that the engineers who build it should come from diverse backgrounds, trained to world-class standards.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/contact" className="btn-primary glow-teal-btn">
+                Work With Us
+              </Link>
+              <Link href="/courses" className="btn-ghost-dark">
+                Join Our Programs
+              </Link>
+            </div>
+          </motion.div>
 
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
-  };
-
-  return (
-    <section className="border-b border-slate-100 bg-slate-50/50 py-20">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-12 text-center">
-          <h2 className="font-heading text-3xl font-black text-slate-900 md:text-4xl">Our Core Values</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">The principles that guide our work and define our company culture.</p>
+          {/* Right: values grid */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.15 }}
+            className="grid grid-cols-3 gap-3"
+          >
+            {["Integrity", "Innovation", "Excellence", "Teamwork", "Growth", "Quality", "Trust", "Agility", "Impact"].map((v, idx) => (
+              <motion.div
+                key={v}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + idx * 0.06 }}
+                className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 py-3 text-center text-xs font-semibold text-slate-300 hover:bg-white/10 hover:border-teal-500/30 hover:text-teal-300 transition-all cursor-default"
+              >
+                {v}
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {coreValues.map((val) => (
-            <motion.div 
-              key={val.title}
-              variants={item}
-              whileHover={{ y: -6 }}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 text-center cursor-pointer"
-            >
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50">
-                {val.icon}
-              </div>
-              <h3 className="font-heading text-sm font-bold text-slate-800">{val.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">{val.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
     </section>
   );
@@ -210,19 +233,19 @@ function Stats() {
   return (
     <section className="border-b border-slate-100 bg-white py-16">
       <div className="mx-auto max-w-6xl px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {stats.map((stat, idx) => (
-            <motion.div 
-              key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
+        <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
               className="text-center"
             >
-              <div className="text-4xl font-black text-teal-600 md:text-5xl">{stat.value}</div>
-              <div className="mt-2 text-sm font-bold text-slate-700">{stat.label}</div>
-              <p className="mt-1 text-xs text-slate-400">{stat.desc}</p>
+              <AnimatedCounter value={s.value} className="font-heading text-4xl font-black text-teal-600 md:text-5xl" />
+              <div className="mt-2 text-sm font-bold text-slate-700">{s.label}</div>
+              <p className="mt-1 text-xs text-slate-400">{s.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -231,50 +254,74 @@ function Stats() {
   );
 }
 
-function Team() {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const item = {
-    hidden: { opacity: 0, scale: 0.95 },
-    show: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } }
-  };
-
+function Values() {
   return (
-    <section className="border-b border-slate-100 bg-slate-50/50 py-20">
+    <section className="bg-slate-50/50 py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-heading text-3xl font-black text-slate-900 md:text-4xl">Meet Our Team</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">Our diverse team of experts brings together years of experience and innovative thinking.</p>
+          <span className="section-badge">Our Principles</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
+            What We Stand For
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            Six principles guide every client engagement, training program, and internal decision at Panacea.
+          </p>
         </div>
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {team.map((member, idx) => (
-            <motion.div 
-              key={idx}
-              variants={item}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 text-center cursor-pointer"
-            >
-              <div className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${member.color} text-xl font-bold text-white shadow-md`}>
-                {member.name.split(" ").map(w => w[0]).join("")}
-              </div>
-              <h3 className="font-heading text-sm font-bold text-slate-800">{member.name}</h3>
-              <div className="mt-1 text-xs font-semibold text-teal-600">{member.role}</div>
-              <p className="mt-3 text-xs leading-relaxed text-slate-500 text-center">{member.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+        <ScrollReveal animation="stagger">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {values.map((v) => (
+              <motion.div
+                key={v.title}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="card-light p-7"
+              >
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50 text-teal-600 ring-1 ring-teal-100">
+                  {v.icon}
+                </div>
+                <h3 className="font-heading text-base font-bold text-slate-800">{v.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500">{v.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+function Team() {
+  return (
+    <section className="border-y border-slate-100 bg-white py-24">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mb-12 text-center">
+          <span className="section-badge">The Team</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
+            People Behind Panacea
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            A diverse team of builders, designers, trainers, and strategists united by a passion for great technology.
+          </p>
+        </div>
+        <ScrollReveal animation="stagger">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {team.map((member, idx) => (
+              <motion.div
+                key={member.name}
+                whileHover={{ y: -5, scale: 1.01 }}
+                transition={{ duration: 0.25 }}
+                className="card-light group p-6 text-center"
+              >
+                <div className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${member.color} text-xl font-bold text-white shadow-lg`}>
+                  {member.initials}
+                </div>
+                <h3 className="font-heading text-base font-bold text-slate-800">{member.name}</h3>
+                <div className="mt-1 text-xs font-semibold text-teal-600">{member.role}</div>
+                <p className="mt-3 text-xs leading-relaxed text-slate-500">{member.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -282,39 +329,71 @@ function Team() {
 
 function Story() {
   return (
-    <section className="bg-white py-20">
-      <div className="mx-auto max-w-5xl px-6 lg:px-8">
+    <section className="bg-white py-24">
+      <div className="mx-auto max-w-4xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-heading text-3xl font-black text-teal-600 md:text-4xl">Our Story</h2>
-          <p className="mt-2 text-sm text-slate-500">Panacea Solution Pvt. Ltd. – From a Simple Idea to a Trusted Tech Partner</p>
+          <span className="section-badge">Our Journey</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-teal-700">
+            From Idea to Industry Leader
+          </h2>
+          <p className="mt-2 text-sm text-slate-500">
+            Five years of building, learning, and growing — alongside our clients and students.
+          </p>
         </div>
 
-        <div className="relative space-y-0">
-          {/* Vertical timeline line */}
-          <div className="absolute left-4 top-0 h-full w-0.5 bg-teal-100 md:left-6" />
+        <div className="relative">
+          <div className="absolute left-6 top-0 h-full w-0.5 bg-gradient-to-b from-teal-500 to-teal-100 rounded-full" />
+          <ScrollReveal animation="stagger">
+            <div className="space-y-0">
+              {milestones.map((m, idx) => (
+                <motion.div
+                  key={m.year}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className="relative pl-16 pb-10"
+                >
+                  <div className="absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 shadow-lg shadow-teal-500/30 ring-4 ring-white">
+                    <span className="text-[10px] font-black text-white">{m.year.slice(2)}</span>
+                  </div>
+                  <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:border-teal-200 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-center gap-3">
+                      <span className="rounded-full bg-teal-50 px-3 py-1 text-[10px] font-bold text-teal-600 ring-1 ring-teal-200">{m.year}</span>
+                      <h3 className="font-heading text-base font-bold text-slate-800">{m.title}</h3>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-500">{m.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          {story.map((item, idx) => (
-            <motion.div 
-              key={idx}
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="relative pl-12 pb-12 md:pl-16"
-            >
-              {/* Dot */}
-              <div className="absolute left-0 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-teal-600 shadow-md md:left-2">
-                <div className="h-3 w-3 rounded-full bg-white" />
-              </div>
-
-              <h3 className="font-heading text-base font-bold text-slate-800">{item.title}</h3>
-              <div className="mt-3 space-y-3">
-                {item.text.map((para, j) => (
-                  <p key={j} className="text-sm leading-relaxed text-slate-600">{para}</p>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+function CTA() {
+  return (
+    <section className="relative overflow-hidden bg-[#020817] py-20">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 h-[300px] w-[500px] rounded-full bg-teal-600/15 blur-[100px]" />
+      </div>
+      <div className="relative mx-auto max-w-3xl px-6 text-center lg:px-8">
+        <h2 className="font-heading text-4xl font-black text-white">
+          Want to be part of the story?
+        </h2>
+        <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-slate-400">
+          Whether you're a business looking for a technology partner, or a professional ready to level up — we'd love to hear from you.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <Link href="/contact" className="btn-primary glow-teal-btn">
+            Start a Conversation
+          </Link>
+          <Link href="/career" className="btn-ghost-dark">
+            Join Our Team
+          </Link>
         </div>
       </div>
     </section>

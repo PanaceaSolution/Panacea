@@ -2,124 +2,242 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { AnimatedCounter } from "./components/AnimatedCounter";
+import { ScrollReveal } from "./components/ScrollReveal";
 
-/* ─── Data ─────────────────────────────────────────────────────── */
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const stats = [
-  { value: "500+", label: "Projects Delivered", desc: "Successfully delivered projects" },
-  { value: "95%", label: "Client satisfaction", desc: "Satisfied customers worldwide" },
-  { value: "2000+", label: "Students Trained", desc: "Career transformations achieved" },
-  { value: "5+", label: "Years Experience", desc: "In the technology industry" },
+/* ─── Data ─────────────────────────────────────────────────────────── */
+
+const heroStats = [
+  { value: "500+", label: "Projects Delivered" },
+  { value: "95%", label: "Client Satisfaction" },
+  { value: "2000+", label: "Students Trained" },
+  { value: "5+", label: "Years of Excellence" },
 ];
 
-const solutions = [
-  { title: "IT Design", desc: "We craft scalable and efficient system architectures that lay the foundation for seamless tech management.", href: "/services" },
-  { title: "IT Consultancy", desc: "Get expert guidance to align your technology strategy with your business goals and innovation.", href: "/services" },
-  { title: "Web Development", desc: "We build fast, secure and responsive websites that deliver great user experiences and business impact.", href: "/services" },
-  { title: "App Development", desc: "From concept to deployment, we create high performing mobile apps tailored to your needs.", href: "/services" },
-  { title: "UI/UX Design", desc: "We design intuitive and engaging user experiences that enhance usability and brand identity.", href: "/services" },
-  { title: "Digital Marketing", desc: "Boost your online presence with data-driven digital campaigns that convert and grow your brand.", href: "/services" },
-  { title: "E-Commerce Solution", desc: "Launch and scale your online store with user-friendly, and fully integrated e-commerce platforms.", href: "/services" },
-  { title: "Content Writing", desc: "Tell your story clearly and effectively with content that engages, informs, and drives results.", href: "/services" },
-  { title: "Outsourcing", desc: "Scale your operations efficiently and effectively by leveraging our expert teams for development, design and support.", href: "/services" },
+const techStack = [
+  "React", "Next.js", "Node.js", "Flutter", "Python", "AWS",
+  "MongoDB", "TypeScript", "Kubernetes", "Docker", "Figma", "TailwindCSS",
+  "React", "Next.js", "Node.js", "Flutter", "Python", "AWS",
+  "MongoDB", "TypeScript", "Kubernetes", "Docker", "Figma", "TailwindCSS",
 ];
 
-const benefits = [
+const services = [
   {
-    title: "Practical Learning",
-    desc: "Learn from real with hands-on projects using industry tools and real-world applications.",
+    title: "Web Development",
+    desc: "Full-stack web applications built with modern frameworks, optimized for performance, security, and scalability.",
     icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
       </svg>
     ),
+    tags: ["React", "Next.js", "Node.js"],
+    large: true,
   },
   {
-    title: "Expert Instructors",
-    desc: "Learn from top industry professionals with 5+ years of practical experience.",
+    title: "Mobile App Development",
+    desc: "Native and cross-platform mobile apps that deliver seamless experiences on iOS and Android.",
     icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
       </svg>
     ),
+    tags: ["Flutter", "React Native"],
+    large: false,
   },
   {
-    title: "Placement Support",
-    desc: "100% placement assistance with internship and job placement with 100% salary hike.",
+    title: "UI/UX Design",
+    desc: "User-centered design that balances beauty with usability — wireframes to production-ready design systems.",
     icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
       </svg>
     ),
+    tags: ["Figma", "Design Systems"],
+    large: false,
   },
   {
-    title: "Flexible Timing",
-    desc: "Weekend and evening flexible schedules to accommodate working professionals.",
+    title: "IT Consulting",
+    desc: "Strategic technology guidance to align your digital infrastructure with business goals.",
     icon: (
-      <svg className="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
       </svg>
     ),
+    tags: ["Strategy", "Architecture"],
+    large: true,
+  },
+  {
+    title: "Digital Marketing",
+    desc: "Data-driven campaigns that grow your brand online — SEO, SEM, social, and content.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+    ),
+    tags: ["SEO", "SEM", "Analytics"],
+    large: false,
+  },
+  {
+    title: "E-Commerce Solutions",
+    desc: "Scalable online stores with payment gateways, inventory management, and conversion-optimized UX.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+    ),
+    tags: ["Shopify", "Custom"],
+    large: false,
   },
 ];
 
-const usp = [
-  { title: "Enterprise Security", desc: "Industry-standard security protocols and data protection measures for all solutions.", icon: "🛡️" },
-  { title: "Rapid Development", desc: "Agile methodologies ensuring faster time-to-market for your projects.", icon: "⚡" },
-  { title: "Global Standards", desc: "Solutions following international coding standards and best practices.", icon: "🌐" },
-  { title: "24/7 Support", desc: "Comprehensive support system with dedicated technical assistance.", icon: "🕐" },
-  { title: "Certified Trainers", desc: "Expert trainers with proven track records and certifications.", icon: "🏆" },
-  { title: "Career Growth", desc: "Training program integration accelerates your professional development.", icon: "📈" },
+const impactStats = [
+  { value: "500+", label: "Projects Delivered", desc: "Across 12+ industries" },
+  { value: "95%", label: "Client Satisfaction", desc: "Consistently maintained" },
+  { value: "2000+", label: "Students Trained", desc: "Career transformations" },
+  { value: "5+", label: "Years in Business", desc: "Since 2019" },
+];
+
+const courses = [
+  {
+    title: "Full Stack MERN Development",
+    level: "Beginner → Advanced",
+    duration: "6 Months",
+    students: "880+",
+    rating: "4.8",
+    outcomes: ["Build production-grade apps", "Git & deployment workflows", "REST & GraphQL APIs"],
+    badge: "Most Popular",
+    badgeColor: "bg-teal-500",
+    slug: "mern-stack",
+  },
+  {
+    title: "Python & Data Science",
+    level: "Beginner → Intermediate",
+    duration: "4 Months",
+    students: "220+",
+    rating: "4.7",
+    outcomes: ["Machine learning fundamentals", "Real Kaggle datasets", "Data visualization"],
+    badge: "High Demand",
+    badgeColor: "bg-indigo-500",
+    slug: "python-data-science",
+  },
+  {
+    title: "Mobile App Development",
+    level: "Beginner → Advanced",
+    duration: "4 Months",
+    students: "880+",
+    rating: "4.7",
+    outcomes: ["Flutter & Dart mastery", "iOS & Android deployment", "Firebase integration"],
+    badge: "In Demand",
+    badgeColor: "bg-emerald-500",
+    slug: "mobile-app-development",
+  },
+  {
+    title: "Digital Marketing Mastery",
+    level: "Beginner → Advanced",
+    duration: "3 Months",
+    students: "440+",
+    rating: "4.6",
+    outcomes: ["SEO + paid ads strategy", "Analytics & reporting", "Content marketing"],
+    badge: "Fast Track",
+    badgeColor: "bg-orange-500",
+    slug: "digital-marketing-mastery",
+  },
 ];
 
 const testimonials = [
   {
-    name: "Unknown Kumar",
-    role: "Software Developer at TCS",
-    text: "Panacea Solution delivered an exceptional web application that transformed our business processes. Their technical expertise and project management skills were outstanding.",
-    initials: "UK",
-    gradient: "from-teal-600 to-teal-400",
+    name: "Rajan Shrestha",
+    role: "Full Stack Developer",
+    company: "Leapfrog Technology",
+    text: "Panacea's MERN Stack program gave me exactly the depth I needed. The real-world projects were the game-changer — I had a portfolio before I even finished the course.",
+    initials: "RS",
+    color: "from-teal-600 to-teal-400",
   },
   {
-    name: "Unknown Kumar",
-    role: "Student at IIT",
-    text: "The online training program at Panacea was comprehensive and practical. I secured a great job within 2 months of completing the course. Highly recommended!",
-    initials: "UK",
-    gradient: "from-teal-500 to-emerald-400",
+    name: "Priya Adhikari",
+    role: "Data Analyst",
+    company: "Deloitte Nepal",
+    text: "I transitioned from an accounting background to data analytics in four months. The placement team's support was exceptional — mock interviews, resume reviews, everything.",
+    initials: "PA",
+    color: "from-indigo-500 to-indigo-400",
   },
   {
-    name: "Unknown Kumar",
-    role: "Mobile Developer at Nepal",
-    text: "They developed our complete mobile app solution from scratch. The team's dedication and technical skills helped us launch successfully in the market.",
-    initials: "UK",
-    gradient: "from-teal-700 to-teal-500",
+    name: "Anuj Maharjan",
+    role: "Co-Founder & CTO",
+    company: "TechSpark Nepal",
+    text: "Panacea built our entire SaaS platform from scratch. They understood our product vision and shipped a polished MVP in 8 weeks. We closed our seed round right after launch.",
+    initials: "AM",
+    color: "from-teal-700 to-teal-500",
+  },
+  {
+    name: "Sunita Tamang",
+    role: "Flutter Developer",
+    company: "Yomari Inc.",
+    text: "The mobile development curriculum is thorough and practical. Six months in, I had three published apps in the Play Store and a job offer before graduation.",
+    initials: "ST",
+    color: "from-emerald-600 to-emerald-400",
+  },
+  {
+    name: "Bikash Thapa",
+    role: "Product Manager",
+    company: "CloudFactory",
+    text: "The web app Panacea delivered helped us reduce manual processing by 70%. Their team communicates clearly, ships on time, and the code quality is enterprise-grade.",
+    initials: "BT",
+    color: "from-teal-600 to-cyan-500",
+  },
+  {
+    name: "Nisha Koirala",
+    role: "UI/UX Designer",
+    company: "Fusemachines Nepal",
+    text: "From zero design knowledge to landing a design role at a top AI company in Nepal. The program focuses on real outcomes — not just theory.",
+    initials: "NK",
+    color: "from-violet-500 to-indigo-500",
   },
 ];
 
 const faqs = [
-  { question: "What development services do you offer?", answer: "We cover end-to-end web, mobile, UI/UX, e-commerce, content, cloud architecture, and strategic developer outsourcing engagements tailored to your engineering stack and targets." },
-  { question: "What training programs are available?", answer: "We offer cohort-based and personalized tracks in full-stack MERN development, Python data science, mobile engineering, digital marketing, and modern product design." },
-  { question: "Do you provide placement assistance after training?", answer: "Yes. We provide 100% placement assistance with mock interviews, resume workshops, portfolio analysis, and direct fast-track recruitment referral routes to our hiring partners." },
-  { question: "How long does a typical development project take?", answer: "Discovery to final launch typically spans 6–12 weeks depending on complexity and integrations. High-fidelity MVPs can ship within 4 weeks with our pre-hardened cloud templates." },
-  { question: "Are your training programs industry-relevant?", answer: "Yes. Curricula are co-designed directly with global tech hiring partners, refreshed every single quarter, and utilize live production-grade tools and micro-project workshops." },
+  {
+    q: "What software development services does Panacea offer?",
+    a: "We build full-stack web applications, native and cross-platform mobile apps, e-commerce platforms, custom SaaS products, UI/UX design systems, and provide end-to-end IT consulting and digital marketing services.",
+  },
+  {
+    q: "What training programs are available?",
+    a: "Our core tracks include Full Stack MERN Development (6 months), Python & Data Science (4 months), Mobile App Development with Flutter (4 months), and Digital Marketing Mastery (3 months). All programs include hands-on projects.",
+  },
+  {
+    q: "Do you provide placement assistance after training?",
+    a: "Yes — 100% placement assistance. This includes mock technical interviews, resume and portfolio workshops, LinkedIn optimization, and direct referrals to our hiring partner network.",
+  },
+  {
+    q: "How long does a typical software project take?",
+    a: "Discovery through launch typically spans 6–12 weeks depending on complexity. We can deliver high-fidelity MVPs within 4 weeks using our accelerated delivery framework.",
+  },
+  {
+    q: "Can I join training if I have no prior coding experience?",
+    a: "Absolutely. Our programs are structured from the ground up — zero experience required. We have dedicated beginner onboarding, foundational modules, and 1:1 support throughout.",
+  },
 ];
 
-/* ─── Page ──────────────────────────────────────────────────────── */
-
+/* ─── Page ──────────────────────────────────────────────────────────── */
 export default function Home() {
   return (
     <div className="bg-white text-slate-800">
       <Navbar />
       <Hero />
-      <Benefits />
-      <Trusted />
-      <Solutions />
-      <WhyUs />
+      <TechMarquee />
+      <Services />
       <Impact />
+      <Training />
+      <Process />
       <Testimonials />
       <FAQ />
       <CTA />
@@ -128,361 +246,471 @@ export default function Home() {
   );
 }
 
-/* ─── Hero ──────────────────────────────────────────────────────── */
+/* ─── Hero ──────────────────────────────────────────────────────────── */
 function Hero() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
-    },
-  };
+  const containerRef = useRef<HTMLElement>(null);
 
-  const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100, damping: 15 },
-    },
-  };
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.fromTo(
+        containerRef.current?.querySelectorAll("[data-hero-in]") ?? [],
+        { opacity: 0, y: 32 },
+        { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: "power3.out", delay: 0.2 }
+      );
+    });
+    return () => mm.revert();
+  }, { scope: containerRef });
 
   return (
-    <section className="relative overflow-hidden bg-white py-16 md:py-24">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2 lg:px-8">
-        {/* Left content */}
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-7"
-        >
-          <motion.div 
-            variants={itemVariants}
-            className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-4 py-1.5 text-xs font-semibold text-teal-700 ring-1 ring-teal-200"
+    <section
+      ref={containerRef}
+      className="relative overflow-hidden bg-[#020817] py-24 md:py-32"
+    >
+      {/* Gradient orbs */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 h-[500px] w-[700px] rounded-full bg-teal-600/20 blur-[120px]" />
+        <div className="absolute left-1/4 bottom-0 h-[300px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
+        <div className="absolute right-1/4 top-1/3 h-[200px] w-[300px] rounded-full bg-teal-400/10 blur-[80px]" />
+        <div className="absolute inset-0 bg-grid-dark" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-6 lg:px-8 text-center">
+        {/* Badge */}
+        <div data-hero-in className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-4 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
+          <span className="text-xs font-semibold text-teal-400 tracking-wide">Nepal's Premier Technology Partner · Since 2019</span>
+        </div>
+
+        {/* Headline */}
+        <h1 data-hero-in className="mt-8 font-heading text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.0] tracking-tight">
+          Build Digital Products
+          <br />
+          <span className="text-gradient-hero">That Define Industries</span>
+        </h1>
+
+        {/* Subtext */}
+        <p data-hero-in className="mx-auto mt-6 max-w-2xl text-base md:text-lg leading-relaxed text-slate-400">
+          We engineer enterprise-grade software, deliver AI-powered digital transformation, and train Nepal's
+          next generation of technology professionals — all under one roof.
+        </p>
+
+        {/* CTAs */}
+        <div data-hero-in className="mt-10 flex flex-wrap justify-center gap-4">
+          <Link href="/contact" className="btn-primary glow-teal-btn">
+            Start a Project
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+          <Link href="/courses" className="btn-ghost-dark">
+            Explore Training Programs
+          </Link>
+        </div>
+
+        {/* Social proof line */}
+        <p data-hero-in className="mt-5 text-xs text-slate-500">
+          Trusted by 50+ companies · 2,000+ careers transformed · 4.8★ employer rating
+        </p>
+
+        {/* Stats */}
+        <div data-hero-in className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04] md:grid-cols-4">
+          {heroStats.map((s) => (
+            <div key={s.label} className="flex flex-col items-center gap-1 px-6 py-6">
+              <span className="font-heading text-3xl font-black text-white">{s.value}</span>
+              <span className="text-xs text-slate-500 font-medium">{s.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Scroll indicator */}
+        <div data-hero-in className="mt-12 flex justify-center">
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="flex flex-col items-center gap-2 text-slate-600"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-pulse" />
-            Premium Development &amp; Training Partner
+            <span className="text-[10px] font-semibold uppercase tracking-widest">Scroll to explore</span>
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
           </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          <motion.h1 
-            variants={itemVariants}
-            className="font-heading text-4xl font-black leading-tight text-slate-900 md:text-5xl"
-          >
-            Accelerate Your{" "}
-            <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600">Development</span> &amp;{" "}
-            <span className="text-teal-800">Training</span> Journey
-          </motion.h1>
+/* ─── Tech Marquee ──────────────────────────────────────────────────── */
+function TechMarquee() {
+  return (
+    <section className="border-b border-slate-100 bg-white py-8">
+      <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">
+        Technologies We Build With
+      </p>
+      <div className="marquee-wrapper">
+        <div className="flex animate-marquee gap-10 whitespace-nowrap w-max">
+          {techStack.map((name, i) => (
+            <span key={i} className="inline-flex items-center gap-2 text-sm font-bold text-slate-300 select-none">
+              <span className="h-1 w-1 rounded-full bg-teal-400/60" />
+              {name}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          <motion.p 
-            variants={itemVariants}
-            className="max-w-lg text-sm leading-relaxed text-slate-600"
-          >
-            Panacea Solution Pvt. Ltd. is your reliable partner for cutting-edge software development and career-focused training solutions. We craft innovative tech solutions, empower the next generation of skilled professionals.
-          </motion.p>
+/* ─── Services ──────────────────────────────────────────────────────── */
+function Services() {
+  return (
+    <section className="bg-slate-50/60 py-24">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mb-16 max-w-2xl">
+          <span className="section-badge">Our Services</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900 leading-tight">
+            Everything You Need to{" "}
+            <span className="text-gradient">Build & Scale</span>
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-slate-500">
+            From strategy and design to development and growth — a full-spectrum technology partner for ambitious businesses.
+          </p>
+        </div>
 
-          <motion.div 
-            variants={itemVariants}
-            className="flex flex-wrap gap-4"
-          >
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-teal-600 px-7 py-3.5 text-xs font-bold text-white shadow-lg shadow-teal-500/20 hover:bg-teal-700 transition-all hover:-translate-y-0.5"
-            >
-              Build With Us
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
+        {/* Bento grid */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+          {services.map((service, idx) => (
+            <ScrollReveal key={service.title} animation="fade-up" delay={idx * 0.06}>
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className={`card-light group cursor-pointer p-7 flex flex-col ${service.large ? "lg:col-span-2" : ""}`}
+              >
+                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600 ring-1 ring-teal-100 group-hover:bg-teal-600 group-hover:text-white group-hover:ring-teal-600 transition-all duration-300">
+                  {service.icon}
+                </div>
+                <h3 className="font-heading text-lg font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
+                  {service.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500 flex-1">{service.desc}</p>
+                <div className="mt-5 flex flex-wrap gap-1.5">
+                  {service.tags.map((t) => (
+                    <span key={t} className="tag-pill">{t}</span>
+                  ))}
+                </div>
+                <Link
+                  href="/services"
+                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-bold text-teal-600 hover:text-teal-700 transition-colors"
+                >
+                  Learn More
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              </motion.div>
+            </ScrollReveal>
+          ))}
+
+          {/* Extra services card */}
+          <ScrollReveal animation="fade-up" delay={0.4}>
+            <Link href="/services">
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="card-light group cursor-pointer p-7 flex flex-col items-center justify-center text-center border-dashed"
+              >
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400 group-hover:bg-teal-50 group-hover:text-teal-600 transition-all">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <p className="text-sm font-bold text-slate-400 group-hover:text-teal-600 transition-colors">
+                  View All 9 Services
+                </p>
+                <p className="mt-1 text-xs text-slate-400">Content writing, outsourcing & more</p>
+              </motion.div>
             </Link>
-            <Link
-              href="/courses"
-              className="rounded-full border border-slate-300 bg-white px-7 py-3.5 text-xs font-bold text-slate-700 hover:border-teal-400 hover:text-teal-600 transition-all"
-            >
-              Explore Courses
-            </Link>
-          </motion.div>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          <motion.div 
-            variants={itemVariants}
-            className="flex flex-wrap gap-x-6 gap-y-2 pt-2 text-xs font-medium text-slate-500"
-          >
-            {["Free Project Access", "Offer Placement Support", "Industry Certified Training"].map((item) => (
-              <div key={item} className="flex items-center gap-1.5">
-                <svg className="h-4 w-4 text-teal-500" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                {item}
+/* ─── Impact ────────────────────────────────────────────────────────── */
+function Impact() {
+  return (
+    <section className="relative overflow-hidden bg-[#020817] py-24">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-teal-600/15 blur-[100px]" />
+        <div className="absolute left-0 bottom-0 h-[300px] w-[300px] rounded-full bg-indigo-600/10 blur-[80px]" />
+        <div className="absolute inset-0 bg-dot-dark" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+          {/* Left */}
+          <ScrollReveal animation="slide-left">
+            <span className="section-badge-dark">Why Panacea</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-white leading-tight">
+              A Technology Partner,{" "}
+              <span className="text-gradient-hero">Not Just a Vendor</span>
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-slate-400">
+              We don't just write code. We architect solutions, mentor teams, and stay invested in your outcomes long after launch day.
+            </p>
+            <div className="mt-8 space-y-4">
+              {[
+                { icon: "🛡️", title: "Enterprise Security Standards", desc: "ISO-aligned practices and data protection on every project." },
+                { icon: "⚡", title: "Agile Delivery, Fast Turnaround", desc: "MVPs in 4 weeks. Full products in 6–12 weeks." },
+                { icon: "🌐", title: "Global Standards, Local Expertise", desc: "International quality benchmarks with deep regional insight." },
+                { icon: "🕐", title: "Ongoing Support & Maintenance", desc: "Post-launch monitoring, updates, and dedicated SLA." },
+              ].map((item) => (
+                <div key={item.title} className="card-dark group flex items-start gap-4 p-4">
+                  <span className="text-xl">{item.icon}</span>
+                  <div>
+                    <div className="text-sm font-bold text-white">{item.title}</div>
+                    <div className="mt-0.5 text-xs leading-relaxed text-slate-400">{item.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+
+          {/* Right stats grid */}
+          <ScrollReveal animation="slide-right">
+            <div className="grid grid-cols-2 gap-4">
+              {impactStats.map((stat, idx) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className="card-dark flex flex-col items-center justify-center py-10 text-center"
+                >
+                  <AnimatedCounter
+                    value={stat.value}
+                    className="font-heading text-4xl font-black text-teal-400"
+                  />
+                  <div className="mt-1.5 text-sm font-bold text-white">{stat.label}</div>
+                  <div className="mt-1 text-xs text-slate-500">{stat.desc}</div>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Training ──────────────────────────────────────────────────────── */
+function Training() {
+  return (
+    <section className="bg-white py-24">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mb-4 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span className="section-badge">Training Programs</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900 leading-tight">
+              Launch Your{" "}
+              <span className="text-gradient">Tech Career</span>
+            </h2>
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500">
+              Industry-designed curricula, expert mentors, real projects, and 100% placement assistance.
+            </p>
+          </div>
+          <Link href="/courses" className="btn-ghost shrink-0">
+            View All Programs →
+          </Link>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {courses.map((course, idx) => (
+            <ScrollReveal key={course.slug} animation="fade-up" delay={idx * 0.08}>
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="card-light group flex flex-col overflow-hidden"
+              >
+                {/* Badge + rating row */}
+                <div className="p-5 pb-0 flex items-center justify-between">
+                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white ${course.badgeColor}`}>
+                    {course.badge}
+                  </span>
+                  <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
+                    <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    {course.rating}
+                  </div>
+                </div>
+
+                <div className="p-5 flex flex-col flex-1">
+                  <h3 className="font-heading text-base font-bold text-slate-800 group-hover:text-teal-700 transition-colors leading-snug">
+                    {course.title}
+                  </h3>
+
+                  <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-400">
+                    <span className="flex items-center gap-1">
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {course.duration}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {course.students} students
+                    </span>
+                  </div>
+
+                  <div className="mt-1 text-[11px] font-medium text-slate-400">{course.level}</div>
+
+                  <ul className="mt-4 flex-1 space-y-2">
+                    {course.outcomes.map((o) => (
+                      <li key={o} className="flex items-start gap-2 text-xs text-slate-500">
+                        <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal-500" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {o}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-5 grid grid-cols-2 gap-2">
+                    <Link href={`/courses/${course.slug}`} className="rounded-xl border border-slate-200 py-2.5 text-center text-xs font-bold text-slate-600 hover:border-teal-400 hover:text-teal-600 transition-colors">
+                      Details
+                    </Link>
+                    <Link href="/contact" className="rounded-xl bg-teal-600 py-2.5 text-center text-xs font-bold text-white hover:bg-teal-700 transition-colors">
+                      Enroll Now
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        {/* Training benefits strip */}
+        <div className="mt-12 rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50 to-white p-8">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: "🎯", title: "100% Placement Assistance", desc: "Mock interviews, resume reviews, referrals" },
+              { icon: "👨‍🏫", title: "Expert Instructors", desc: "5–15 years of industry experience" },
+              { icon: "🏗️", title: "Real-World Projects", desc: "Build a portfolio you can showcase" },
+              { icon: "📅", title: "Flexible Scheduling", desc: "Weekday, weekend & evening batches" },
+            ].map((b) => (
+              <div key={b.title} className="flex items-start gap-3">
+                <span className="text-2xl">{b.icon}</span>
+                <div>
+                  <div className="text-xs font-bold text-slate-800">{b.title}</div>
+                  <div className="mt-0.5 text-xs text-slate-500">{b.desc}</div>
+                </div>
               </div>
             ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Right image */}
-        <div className="relative justify-self-center w-full max-w-lg">
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.3 }}
-            className="absolute -left-4 -top-4 z-10 rounded-2xl bg-white p-4 shadow-xl border border-slate-100"
-          >
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100">
-                <span className="text-sm">⭐</span>
-              </div>
-              <div>
-                <div className="text-base font-black text-slate-800">4.8+</div>
-                <div className="text-[9px] text-slate-400 leading-none">Employer Rating</div>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="overflow-hidden rounded-3xl shadow-2xl shadow-slate-200/60 border border-slate-100"
-          >
-            <Image
-              src="/hero-team.jpg"
-              alt="Panacea team"
-              width={600}
-              height={450}
-              className="h-[380px] w-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
-              priority
-            />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─── Benefits ──────────────────────────────────────────────────── */
-function Benefits() {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
-  };
-
-  return (
-    <section className="border-y border-slate-100 bg-slate-50/50 py-20">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <SectionHeading
-          title="Why Choose Our Training Programs?"
-          desc="Industry focused training programs designed for career success."
-        />
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {benefits.map((itemObj) => (
-            <motion.div 
-              key={itemObj.title}
-              variants={item}
-              whileHover={{ y: -6, scale: 1.01 }}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
-            >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50">
-                {itemObj.icon}
-              </div>
-              <h3 className="font-heading text-sm font-bold text-slate-800">{itemObj.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">{itemObj.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Trusted By ────────────────────────────────────────────────── */
-function Trusted() {
-  const logos = ["Next.js", "React", "Node.js", "AWS", "Flutter", "MongoDB"];
-  return (
-    <section className="border-b border-slate-100 bg-white py-10">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <p className="mb-8 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">
-          Trusted by Leading companies and professionals
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
-          {logos.map((name, i) => (
-            <motion.div 
-              key={name}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="flex h-10 w-20 items-center justify-center cursor-pointer"
-            >
-              <span className="text-sm font-black text-slate-300 hover:text-slate-500 transition-colors">{name}</span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Solutions Grid ────────────────────────────────────────────── */
-function Solutions() {
-  const icons = [
-    <svg key="1" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>,
-    <svg key="2" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>,
-    <svg key="3" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>,
-    <svg key="4" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>,
-    <svg key="5" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>,
-    <svg key="6" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>,
-    <svg key="7" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>,
-    <svg key="8" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
-    <svg key="9" className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+/* ─── Process ───────────────────────────────────────────────────────── */
+function Process() {
+  const steps = [
+    { num: "01", title: "Discovery Call", desc: "We understand your goals, constraints, and vision before a single line is written." },
+    { num: "02", title: "Architecture & Design", desc: "Wireframes, system design, and technical stack selection — aligned to your roadmap." },
+    { num: "03", title: "Agile Development", desc: "Two-week sprints with weekly demos. You're in the loop at every milestone." },
+    { num: "04", title: "QA & Testing", desc: "Automated and manual testing across devices and edge cases before any release." },
+    { num: "05", title: "Launch & Support", desc: "Zero-downtime deployment, monitoring, and ongoing SLA-backed maintenance." },
   ];
 
   return (
-    <section className="border-b border-slate-100 bg-slate-50/50 py-20">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <SectionHeading
-          badge="Our Expertise"
-          title="Development & Training Solutions"
-          desc="Comprehensive technology solutions and professional training programs designed to accelerate growth and create value."
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {solutions.map((solution, idx) => (
-            <motion.div 
-              key={solution.title}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300 group cursor-pointer"
-            >
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50">
-                {icons[idx]}
-              </div>
-              <h3 className="font-heading text-sm font-bold text-slate-800 group-hover:text-teal-600 transition-colors">{solution.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">{solution.desc}</p>
-              <Link href={solution.href} className="mt-4 inline-flex items-center gap-1 text-[11px] font-bold text-teal-600 hover:text-teal-700">
-                Learn More
-                <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Why Us ────────────────────────────────────────────────────── */
-function WhyUs() {
-  return (
-    <section className="border-b border-slate-100 bg-white py-20">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <SectionHeading
-          title="Why Choose Panacea Solution?"
-          desc="We combine cutting-edge technology expertise with proven training methodologies to deliver exceptional results."
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {usp.map((item, idx) => (
-            <motion.div 
-              key={item.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: idx * 0.05 }}
-              whileHover={{ y: -6 }}
-              className="rounded-2xl border border-slate-100 bg-slate-50/60 p-6 hover:shadow-md transition-all duration-300 cursor-pointer"
-            >
-              <div className="mb-3 text-2xl">{item.icon}</div>
-              <h3 className="font-heading text-sm font-bold text-slate-800">{item.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">{item.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Impact ────────────────────────────────────────────────────── */
-function Impact() {
-  return (
-    <section className="py-20" style={{ backgroundColor: "#0d3d52" }}>
+    <section className="border-y border-slate-100 bg-slate-50/40 py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="font-heading text-3xl font-black text-white md:text-4xl">Our Impact</h2>
-          <p className="mt-3 text-sm text-slate-400">Numbers that showcase our commitment to excellence in development and training.</p>
+          <span className="section-badge">How We Work</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
+            Our Delivery Process
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            Transparent, structured, and built around your outcomes — not just deliverables.
+          </p>
         </div>
-        <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {stats.map((stat, idx) => (
-            <motion.div 
-              key={stat.label}
-              initial={{ scale: 0.9, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center"
-            >
-              <div className="text-4xl font-black text-teal-400">{stat.value}</div>
-              <div className="mt-2 text-sm font-bold text-white">{stat.label}</div>
-              <p className="mt-1 text-[11px] text-slate-400">{stat.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+
+        <ScrollReveal animation="stagger">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            {steps.map((step, idx) => (
+              <motion.div
+                key={step.num}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="card-light group p-6 text-center cursor-pointer"
+              >
+                <div className="mx-auto step-number">{step.num}</div>
+                <h3 className="mt-4 font-heading text-sm font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-slate-500">{step.desc}</p>
+                {idx < steps.length - 1 && (
+                  <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 text-slate-200">
+                    →
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
 }
 
-/* ─── Testimonials ──────────────────────────────────────────────── */
+/* ─── Testimonials ──────────────────────────────────────────────────── */
 function Testimonials() {
   return (
-    <section className="border-y border-slate-100 bg-slate-50/50 py-20">
+    <section className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <SectionHeading
-          title="What Our Clients and Students Say"
-          desc="Testimonials from successful projects and career transformations."
-        />
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="mb-12 text-center">
+          <span className="section-badge">Success Stories</span>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
+            Outcomes, Not Just Opinions
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            Real results from engineers, founders, and professionals who chose Panacea.
+          </p>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t, i) => (
-            <motion.div 
+            <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -6 }}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300"
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, delay: i * 0.07 }}
+              whileHover={{ y: -4 }}
+              className="card-light p-6 flex flex-col"
             >
-              <div className="flex gap-0.5 text-amber-400">
-                {"★★★★★".split("").map((s, j) => <span key={j}>{s}</span>)}
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map((s) => (
+                  <svg key={s} className="h-4 w-4 text-amber-400 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
               </div>
-              <p className="mt-4 text-xs leading-relaxed text-slate-600 italic">&ldquo;{t.text}&rdquo;</p>
+              <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-600 italic">&ldquo;{t.text}&rdquo;</p>
               <div className="mt-5 flex items-center gap-3 border-t border-slate-100 pt-4">
-                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${t.gradient} text-xs font-bold text-white`}>
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} text-xs font-bold text-white`}>
                   {t.initials}
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-800">{t.name}</div>
-                  <div className="text-[10px] text-slate-400">{t.role}</div>
+                  <div className="text-sm font-bold text-slate-800">{t.name}</div>
+                  <div className="text-[11px] text-slate-400">{t.role} · {t.company}</div>
                 </div>
               </div>
             </motion.div>
@@ -493,18 +721,20 @@ function Testimonials() {
   );
 }
 
-/* ─── FAQ ───────────────────────────────────────────────────────── */
+/* ─── FAQ ───────────────────────────────────────────────────────────── */
 function FAQ() {
   return (
-    <section className="bg-white py-20">
+    <section className="border-y border-slate-100 bg-slate-50/50 py-24">
       <div className="mx-auto max-w-4xl px-6 lg:px-8">
-        <SectionHeading
-          title="Frequently Asked Questions"
-          desc="Get answers to common questions about our development services and training programs."
-        />
+        <div className="mb-12 text-center">
+          <span className="section-badge">FAQ</span>
+          <h2 className="mt-4 font-heading text-4xl font-black text-slate-900">
+            Common Questions
+          </h2>
+        </div>
         <div className="space-y-3">
           {faqs.map((faq) => (
-            <FAQItem key={faq.question} question={faq.question} answer={faq.answer} />
+            <FAQItem key={faq.q} question={faq.q} answer={faq.a} />
           ))}
         </div>
       </div>
@@ -513,31 +743,32 @@ function FAQ() {
 }
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50/40 p-5 transition-all duration-300">
+    <div className={`rounded-2xl border transition-all duration-200 ${open ? "border-teal-200 bg-white shadow-sm" : "border-slate-200 bg-white/60"}`}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between font-heading text-sm font-semibold text-slate-800 focus:outline-none text-left"
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between gap-4 p-5 text-left focus:outline-none"
       >
-        {question}
-        <motion.span 
-          animate={{ rotate: isOpen ? 45 : 0 }}
-          className="ml-4 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-200 text-teal-600"
+        <span className="font-heading text-sm font-semibold text-slate-800">{question}</span>
+        <motion.span
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.2 }}
+          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-lg font-light transition-colors ${open ? "border-teal-500 text-teal-600" : "border-slate-200 text-slate-400"}`}
         >
           +
         </motion.span>
       </button>
       <AnimatePresence initial={false}>
-        {isOpen && (
+        {open && (
           <motion.div
-            initial={{ height: 0, opacity: 0, marginTop: 0 }}
-            animate={{ height: "auto", opacity: 1, marginTop: 12 }}
-            exit={{ height: 0, opacity: 0, marginTop: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
             className="overflow-hidden"
           >
-            <p className="border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-500">
+            <p className="border-t border-slate-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-slate-500">
               {answer}
             </p>
           </motion.div>
@@ -547,58 +778,55 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
-/* ─── CTA ───────────────────────────────────────────────────────── */
+/* ─── CTA ───────────────────────────────────────────────────────────── */
 function CTA() {
   return (
-    <section className="bg-slate-50 py-20">
-      <div className="mx-auto max-w-5xl px-6 text-center lg:px-8">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
+    <section className="relative overflow-hidden bg-[#020817] py-24">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[700px] rounded-full bg-teal-600/20 blur-[120px]" />
+        <div className="absolute inset-0 bg-grid-dark" />
+      </div>
+      <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="font-heading text-3xl font-black text-slate-900 md:text-4xl"
+          transition={{ duration: 0.6 }}
         >
-          Ready to Grow Your Career or Business?
-        </motion.h2>
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-500"
-        >
-          From new tools and technologies to user behavior and design thinking, we constantly adapt to deliver better results for our clients.
-        </motion.p>
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="mt-8 flex flex-wrap justify-center gap-4"
-        >
-          <Link href="/courses" className="rounded-full bg-teal-600 px-8 py-3.5 text-xs font-bold text-white shadow-lg shadow-teal-500/20 hover:bg-teal-700 transition-all hover:scale-105">
-            Start Learning Today
-          </Link>
-          <Link href="/contact" className="rounded-full border border-slate-300 bg-white px-8 py-3.5 text-xs font-bold text-slate-700 hover:border-teal-400 hover:text-teal-600 transition-all hover:scale-105">
-            Discuss Your Project
-          </Link>
+          <span className="section-badge-dark mb-4 inline-flex">
+            Ready to Build?
+          </span>
+          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight">
+            Let's Build Something
+            <br />
+            <span className="text-gradient-hero">Extraordinary Together</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-400">
+            Whether you're launching a startup, scaling an enterprise, or transforming your career — we're your partner in every step.
+          </p>
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <Link href="/contact" className="btn-primary glow-teal-btn text-sm">
+              Start a Project
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+            <Link href="/courses" className="btn-ghost-dark text-sm">
+              Enroll in Training
+            </Link>
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
+            {["Free initial consultation", "No commitment required", "Response within 24 hours"].map((t) => (
+              <div key={t} className="flex items-center gap-1.5 text-xs text-slate-500">
+                <svg className="h-3.5 w-3.5 text-teal-500" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                {t}
+              </div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>
-  );
-}
-
-/* ─── Shared ────────────────────────────────────────────────────── */
-function SectionHeading({ title, badge, desc }: { title: string; badge?: string; desc?: string }) {
-  return (
-    <div className="mb-12 text-center">
-      {badge && (
-        <span className="mb-3 inline-block rounded-full bg-teal-50 px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-teal-600 ring-1 ring-teal-200">
-          {badge}
-        </span>
-      )}
-      <h2 className="font-heading text-3xl font-black text-slate-900 md:text-4xl">{title}</h2>
-      {desc && <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">{desc}</p>}
-    </div>
   );
 }
