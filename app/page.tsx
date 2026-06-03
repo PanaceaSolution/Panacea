@@ -1,16 +1,19 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { AnimatedCounter } from "./components/AnimatedCounter";
-import { ScrollReveal } from "./components/ScrollReveal";
+import {
+  FadeUp, FadeIn, SlideIn, StaggerContainer, StaggerItem,
+  TiltCard, MagneticButton, TextReveal, FloatingOrb, PulseGlow,
+  ScaleIn, HoverLift, ease,
+} from "./components/MotionPrimitives";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -40,7 +43,6 @@ const services = [
       </svg>
     ),
     tags: ["React", "Next.js", "Node.js"],
-    large: true,
   },
   {
     title: "Mobile App Development",
@@ -51,7 +53,6 @@ const services = [
       </svg>
     ),
     tags: ["Flutter", "React Native"],
-    large: false,
   },
   {
     title: "UI/UX Design",
@@ -62,7 +63,6 @@ const services = [
       </svg>
     ),
     tags: ["Figma", "Design Systems"],
-    large: false,
   },
   {
     title: "IT Consulting",
@@ -73,7 +73,6 @@ const services = [
       </svg>
     ),
     tags: ["Strategy", "Architecture"],
-    large: true,
   },
   {
     title: "Digital Marketing",
@@ -84,7 +83,6 @@ const services = [
       </svg>
     ),
     tags: ["SEO", "SEM", "Analytics"],
-    large: false,
   },
   {
     title: "E-Commerce Solutions",
@@ -95,7 +93,6 @@ const services = [
       </svg>
     ),
     tags: ["Shopify", "Custom"],
-    large: false,
   },
 ];
 
@@ -153,57 +150,6 @@ const courses = [
   },
 ];
 
-const testimonials = [
-  {
-    name: "Rajan Shrestha",
-    role: "Full Stack Developer",
-    company: "Leapfrog Technology",
-    text: "Panacea's MERN Stack program gave me exactly the depth I needed. The real-world projects were the game-changer — I had a portfolio before I even finished the course.",
-    initials: "RS",
-    color: "from-teal-600 to-teal-400",
-  },
-  {
-    name: "Priya Adhikari",
-    role: "Data Analyst",
-    company: "Deloitte Nepal",
-    text: "I transitioned from an accounting background to data analytics in four months. The placement team's support was exceptional — mock interviews, resume reviews, everything.",
-    initials: "PA",
-    color: "from-indigo-500 to-indigo-400",
-  },
-  {
-    name: "Anuj Maharjan",
-    role: "Co-Founder & CTO",
-    company: "TechSpark Nepal",
-    text: "Panacea built our entire SaaS platform from scratch. They understood our product vision and shipped a polished MVP in 8 weeks. We closed our seed round right after launch.",
-    initials: "AM",
-    color: "from-teal-700 to-teal-500",
-  },
-  {
-    name: "Sunita Tamang",
-    role: "Flutter Developer",
-    company: "Yomari Inc.",
-    text: "The mobile development curriculum is thorough and practical. Six months in, I had three published apps in the Play Store and a job offer before graduation.",
-    initials: "ST",
-    color: "from-emerald-600 to-emerald-400",
-  },
-  {
-    name: "Bikash Thapa",
-    role: "Product Manager",
-    company: "CloudFactory",
-    text: "The web app Panacea delivered helped us reduce manual processing by 70%. Their team communicates clearly, ships on time, and the code quality is enterprise-grade.",
-    initials: "BT",
-    color: "from-teal-600 to-cyan-500",
-  },
-  {
-    name: "Nisha Koirala",
-    role: "UI/UX Designer",
-    company: "Fusemachines Nepal",
-    text: "From zero design knowledge to landing a design role at a top AI company in Nepal. The program focuses on real outcomes — not just theory.",
-    initials: "NK",
-    color: "from-violet-500 to-indigo-500",
-  },
-];
-
 const faqs = [
   {
     q: "What software development services does Panacea offer?",
@@ -248,95 +194,134 @@ export default function Home() {
 
 /* ─── Hero ──────────────────────────────────────────────────────────── */
 function Hero() {
-  const containerRef = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.fromTo(
-        containerRef.current?.querySelectorAll("[data-hero-in]") ?? [],
-        { opacity: 0, y: 32 },
-        { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: "power3.out", delay: 0.2 }
-      );
-    });
-    return () => mm.revert();
-  }, { scope: containerRef });
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
+    visible: {
+      opacity: 1, y: 0, filter: "blur(0px)",
+      transition: { duration: 0.8, ease: ease.premium },
+    },
+  };
 
   return (
-    <section
-      ref={containerRef}
-      className="relative overflow-hidden bg-[#020817] py-24 md:py-32"
-    >
-      {/* Gradient orbs */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 h-[500px] w-[700px] rounded-full bg-teal-600/20 blur-[120px]" />
-        <div className="absolute left-1/4 bottom-0 h-[300px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-        <div className="absolute right-1/4 top-1/3 h-[200px] w-[300px] rounded-full bg-teal-400/10 blur-[80px]" />
+    <section ref={ref} className="relative overflow-hidden bg-[#020817] py-24 md:py-32">
+      {/* Parallax bg layer */}
+      <motion.div style={{ y }} className="pointer-events-none absolute inset-0" aria-hidden>
+        <FloatingOrb className="absolute left-1/2 top-0 -translate-x-1/2 h-[500px] w-[700px] rounded-full bg-teal-600/20 blur-[120px]" delay={0} duration={10} />
+        <FloatingOrb className="absolute left-1/4 bottom-0 h-[300px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" delay={2} duration={12} />
+        <FloatingOrb className="absolute right-1/4 top-1/3 h-[200px] w-[300px] rounded-full bg-teal-400/10 blur-[80px]" delay={4} duration={8} />
         <div className="absolute inset-0 bg-grid-dark" />
-      </div>
+      </motion.div>
 
-      <div className="relative mx-auto max-w-6xl px-6 lg:px-8 text-center">
-        {/* Badge */}
-        <div data-hero-in className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-4 py-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
-          <span className="text-xs font-semibold text-teal-400 tracking-wide">Nepal's Premier Technology Partner · Since 2019</span>
-        </div>
+      <motion.div
+        style={{ opacity }}
+        className="relative mx-auto max-w-6xl px-6 lg:px-8 text-center"
+      >
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col items-center gap-6"
+        >
+          {/* Badge */}
+          <motion.div variants={itemVariants}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={ease.spring}
+              className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-4 py-1.5"
+            >
+              <PulseGlow className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+              <span className="text-xs font-semibold text-teal-400 tracking-wide">
+                Nepal's Premier Technology Partner · Since 2019
+              </span>
+            </motion.div>
+          </motion.div>
 
-        {/* Headline */}
-        <h1 data-hero-in className="mt-8 font-heading text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.0] tracking-tight">
-          Build Digital Products
-          <br />
-          <span className="text-gradient-hero">That Define Industries</span>
-        </h1>
+          {/* Headline with word reveal */}
+          <motion.h1 variants={itemVariants} className="font-heading text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.0] tracking-tight">
+            <TextReveal text="Build Digital Products" delay={0.2} wordDelay={0.07} />
+            <br />
+            <span className="text-gradient-hero">
+              <TextReveal text="That Define Industries" delay={0.55} wordDelay={0.07} />
+            </span>
+          </motion.h1>
 
-        {/* Subtext */}
-        <p data-hero-in className="mx-auto mt-6 max-w-2xl text-base md:text-lg leading-relaxed text-slate-400">
-          We engineer enterprise-grade software, deliver AI-powered digital transformation, and train Nepal's
-          next generation of technology professionals — all under one roof.
-        </p>
+          {/* Subtext */}
+          <motion.p variants={itemVariants} className="mx-auto max-w-2xl text-base md:text-lg leading-relaxed text-slate-400">
+            We engineer enterprise-grade software, deliver AI-powered digital transformation, and train Nepal's
+            next generation of technology professionals — all under one roof.
+          </motion.p>
 
-        {/* CTAs */}
-        <div data-hero-in className="mt-10 flex flex-wrap justify-center gap-4">
-          <Link href="/contact" className="btn-primary glow-teal-btn">
-            Start a Project
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
-          <Link href="/courses" className="btn-ghost-dark">
-            Explore Training Programs
-          </Link>
-        </div>
+          {/* CTAs */}
+          <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-4">
+            <MagneticButton>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} transition={ease.spring}>
+                <Link href="/contact" className="btn-primary glow-teal-btn">
+                  Start a Project
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              </motion.div>
+            </MagneticButton>
+            <MagneticButton>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} transition={ease.spring}>
+                <Link href="/courses" className="btn-ghost-dark">Explore Training Programs</Link>
+              </motion.div>
+            </MagneticButton>
+          </motion.div>
 
-        {/* Social proof line */}
-        <p data-hero-in className="mt-5 text-xs text-slate-500">
-          Trusted by 20+ companies · 120+ careers transformed · 4.8★ employer rating
-        </p>
+          {/* Social proof */}
+          <motion.p variants={itemVariants} className="text-xs text-slate-500">
+            Trusted by 20+ companies · 120+ careers transformed · 4.8★ employer rating
+          </motion.p>
 
-        {/* Stats */}
-        <div data-hero-in className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04] md:grid-cols-4">
-          {heroStats.map((s) => (
-            <div key={s.label} className="flex flex-col items-center gap-1 px-6 py-6">
-              <span className="font-heading text-3xl font-black text-white">{s.value}</span>
-              <span className="text-xs text-slate-500 font-medium">{s.label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Scroll indicator */}
-        <div data-hero-in className="mt-12 flex justify-center">
+          {/* Stats grid */}
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2 text-slate-600"
+            variants={itemVariants}
+            className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04] md:grid-cols-4 w-full"
+          >
+            {heroStats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9 + i * 0.1, ease: ease.premium }}
+                whileHover={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+                className="flex flex-col items-center gap-1 px-6 py-6 transition-colors duration-200"
+              >
+                <span className="font-heading text-3xl font-black text-white">{s.value}</span>
+                <span className="text-xs text-slate-500 font-medium">{s.label}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Scroll indicator */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-4 flex flex-col items-center gap-2 text-slate-600"
           >
             <span className="text-[10px] font-semibold uppercase tracking-widest">Scroll to explore</span>
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.div>
           </motion.div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
@@ -344,21 +329,23 @@ function Hero() {
 /* ─── Tech Marquee ──────────────────────────────────────────────────── */
 function TechMarquee() {
   return (
-    <section className="border-b border-slate-100 bg-white py-8">
-      <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">
-        Technologies We Build With
-      </p>
-      <div className="marquee-wrapper">
-        <div className="flex animate-marquee gap-10 whitespace-nowrap w-max">
-          {techStack.map((name, i) => (
-            <span key={i} className="inline-flex items-center gap-2 text-sm font-bold text-slate-300 select-none">
-              <span className="h-1 w-1 rounded-full bg-teal-400/60" />
-              {name}
-            </span>
-          ))}
+    <FadeIn>
+      <section className="border-b border-slate-100 bg-white py-8">
+        <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">
+          Technologies We Build With
+        </p>
+        <div className="marquee-wrapper">
+          <div className="flex animate-marquee gap-10 whitespace-nowrap w-max">
+            {techStack.map((name, i) => (
+              <span key={i} className="inline-flex items-center gap-2 text-sm font-bold text-slate-300 select-none">
+                <span className="h-1 w-1 rounded-full bg-teal-400/60" />
+                {name}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </FadeIn>
   );
 }
 
@@ -367,7 +354,7 @@ function Services() {
   return (
     <section className="bg-slate-50/60 py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-16 max-w-2xl">
+        <SlideIn direction="left" className="mb-16 max-w-2xl">
           <span className="section-badge">Our Services</span>
           <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900 leading-tight">
             Everything You Need to{" "}
@@ -376,63 +363,77 @@ function Services() {
           <p className="mt-4 text-base leading-relaxed text-slate-500">
             From strategy and design to development and growth — a full-spectrum technology partner for ambitious businesses.
           </p>
-        </div>
+        </SlideIn>
 
-        {/* Bento grid */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-          {services.map((service, idx) => (
-            <ScrollReveal key={service.title} animation="fade-up" delay={idx * 0.06}>
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.25 }}
-                className={`card-light group cursor-pointer p-7 flex flex-col ${service.large ? "lg:col-span-2" : ""}`}
-              >
-                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600 ring-1 ring-teal-100 group-hover:bg-teal-600 group-hover:text-white group-hover:ring-teal-600 transition-all duration-300">
-                  {service.icon}
-                </div>
-                <h3 className="font-heading text-lg font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
-                  {service.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-500 flex-1">{service.desc}</p>
-                <div className="mt-5 flex flex-wrap gap-1.5">
-                  {service.tags.map((t) => (
-                    <span key={t} className="tag-pill">{t}</span>
-                  ))}
-                </div>
-                <Link
-                  href="/services"
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-bold text-teal-600 hover:text-teal-700 transition-colors"
+        <StaggerContainer className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr" stagger={0.08}>
+          {services.map((service) => (
+            <StaggerItem key={service.title} className="h-full">
+              <TiltCard className="h-full" intensity={5}>
+                <motion.div
+                  whileHover={{ boxShadow: "0 20px 48px rgba(13,148,136,0.12), 0 0 0 1px rgba(13,148,136,0.15)" }}
+                  transition={{ duration: 0.3 }}
+                  className="card-light group cursor-pointer p-7 flex flex-col h-full"
                 >
-                  Learn More
-                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Link>
-              </motion.div>
-            </ScrollReveal>
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={ease.springBounce}
+                    className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600 ring-1 ring-teal-100 group-hover:bg-teal-600 group-hover:text-white group-hover:ring-teal-600 transition-colors duration-300"
+                  >
+                    {service.icon}
+                  </motion.div>
+                  <h3 className="font-heading text-lg font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-500 flex-1">{service.desc}</p>
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {service.tags.map((t) => (
+                      <span key={t} className="tag-pill">{t}</span>
+                    ))}
+                  </div>
+                  <Link href="/services" className="mt-5 inline-flex items-center gap-1.5 text-xs font-bold text-teal-600 hover:text-teal-700 transition-colors group/link">
+                    Learn More
+                    <motion.svg
+                      className="h-3.5 w-3.5"
+                      fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"
+                      animate={{ x: 0 }}
+                      whileHover={{ x: 3 }}
+                      transition={ease.spring}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </motion.svg>
+                  </Link>
+                </motion.div>
+              </TiltCard>
+            </StaggerItem>
           ))}
 
-          {/* Extra services card */}
-          <ScrollReveal animation="fade-up" delay={0.4}>
-            <Link href="/services">
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.25 }}
-                className="card-light group cursor-pointer p-7 flex flex-col items-center justify-center text-center border-dashed"
-              >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400 group-hover:bg-teal-50 group-hover:text-teal-600 transition-all">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
-                </div>
-                <p className="text-sm font-bold text-slate-400 group-hover:text-teal-600 transition-colors">
-                  View All 9 Services
-                </p>
-                <p className="mt-1 text-xs text-slate-400">Content writing, outsourcing & more</p>
-              </motion.div>
-            </Link>
-          </ScrollReveal>
-        </div>
+          {/* View all card */}
+          <StaggerItem className="h-full">
+            <TiltCard className="h-full" intensity={4}>
+              <Link href="/services" className="block h-full">
+                <motion.div
+                  whileHover={{ borderColor: "rgba(13,148,136,0.4)", backgroundColor: "rgba(13,148,136,0.02)" }}
+                  transition={{ duration: 0.25 }}
+                  className="card-light group cursor-pointer p-7 flex flex-col items-center justify-center text-center h-full border-dashed"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.2, rotate: 90 }}
+                    transition={ease.springBounce}
+                    className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400 group-hover:bg-teal-50 group-hover:text-teal-600 transition-all"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </motion.div>
+                  <p className="text-sm font-bold text-slate-400 group-hover:text-teal-600 transition-colors">
+                    View All 9 Services
+                  </p>
+                  <p className="mt-1 text-xs text-slate-400">Content writing, outsourcing & more</p>
+                </motion.div>
+              </Link>
+            </TiltCard>
+          </StaggerItem>
+        </StaggerContainer>
       </div>
     </section>
   );
@@ -443,15 +444,14 @@ function Impact() {
   return (
     <section className="relative overflow-hidden bg-[#020817] py-24">
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-teal-600/15 blur-[100px]" />
-        <div className="absolute left-0 bottom-0 h-[300px] w-[300px] rounded-full bg-indigo-600/10 blur-[80px]" />
+        <FloatingOrb className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-teal-600/15 blur-[100px]" delay={0} duration={10} />
+        <FloatingOrb className="absolute left-0 bottom-0 h-[300px] w-[300px] rounded-full bg-indigo-600/10 blur-[80px]" delay={3} duration={12} />
         <div className="absolute inset-0 bg-dot-dark" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
-          {/* Left */}
-          <ScrollReveal animation="slide-left">
+          <SlideIn direction="left">
             <span className="section-badge-dark">Why Panacea</span>
             <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-white leading-tight">
               A Technology Partner,{" "}
@@ -460,46 +460,49 @@ function Impact() {
             <p className="mt-4 text-base leading-relaxed text-slate-400">
               We don't just write code. We architect solutions, mentor teams, and stay invested in your outcomes long after launch day.
             </p>
-            <div className="mt-8 space-y-4">
+            <StaggerContainer className="mt-8 space-y-4" stagger={0.08}>
               {[
                 { icon: "🛡️", title: "Enterprise Security Standards", desc: "ISO-aligned practices and data protection on every project." },
                 { icon: "⚡", title: "Agile Delivery, Fast Turnaround", desc: "MVPs in 4 weeks. Full products in 6–12 weeks." },
                 { icon: "🌐", title: "Global Standards, Local Expertise", desc: "International quality benchmarks with deep regional insight." },
                 { icon: "🕐", title: "Ongoing Support & Maintenance", desc: "Post-launch monitoring, updates, and dedicated SLA." },
               ].map((item) => (
-                <div key={item.title} className="card-dark group flex items-start gap-4 p-4">
-                  <span className="text-xl">{item.icon}</span>
-                  <div>
-                    <div className="text-sm font-bold text-white">{item.title}</div>
-                    <div className="mt-0.5 text-xs leading-relaxed text-slate-400">{item.desc}</div>
-                  </div>
-                </div>
+                <StaggerItem key={item.title}>
+                  <motion.div
+                    whileHover={{ backgroundColor: "rgba(255,255,255,0.08)", x: 4 }}
+                    transition={{ duration: 0.2 }}
+                    className="card-dark flex items-start gap-4 p-4"
+                  >
+                    <span className="text-xl">{item.icon}</span>
+                    <div>
+                      <div className="text-sm font-bold text-white">{item.title}</div>
+                      <div className="mt-0.5 text-xs leading-relaxed text-slate-400">{item.desc}</div>
+                    </div>
+                  </motion.div>
+                </StaggerItem>
               ))}
-            </div>
-          </ScrollReveal>
+            </StaggerContainer>
+          </SlideIn>
 
-          {/* Right stats grid */}
-          <ScrollReveal animation="slide-right">
+          <SlideIn direction="right">
             <div className="grid grid-cols-2 gap-4">
               {impactStats.map((stat, idx) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
-                  className="card-dark flex flex-col items-center justify-center py-10 text-center"
-                >
-                  <AnimatedCounter
-                    value={stat.value}
-                    className="font-heading text-4xl font-black text-teal-400"
-                  />
-                  <div className="mt-1.5 text-sm font-bold text-white">{stat.label}</div>
-                  <div className="mt-1 text-xs text-slate-500">{stat.desc}</div>
-                </motion.div>
+                <ScaleIn key={stat.label} delay={idx * 0.1}>
+                  <TiltCard intensity={4}>
+                    <motion.div
+                      whileHover={{ borderColor: "rgba(13,148,136,0.3)" }}
+                      transition={{ duration: 0.25 }}
+                      className="card-dark flex flex-col items-center justify-center py-10 text-center"
+                    >
+                      <AnimatedCounter value={stat.value} className="font-heading text-4xl font-black text-teal-400" />
+                      <div className="mt-1.5 text-sm font-bold text-white">{stat.label}</div>
+                      <div className="mt-1 text-xs text-slate-500">{stat.desc}</div>
+                    </motion.div>
+                  </TiltCard>
+                </ScaleIn>
               ))}
             </div>
-          </ScrollReveal>
+          </SlideIn>
         </div>
       </div>
     </section>
@@ -512,7 +515,7 @@ function Training() {
     <section className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-4 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
+          <SlideIn direction="left">
             <span className="section-badge">Training Programs</span>
             <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900 leading-tight">
               Launch Your{" "}
@@ -521,99 +524,109 @@ function Training() {
             <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500">
               Industry-designed curricula, expert mentors, real projects, and 100% placement assistance.
             </p>
-          </div>
-          <Link href="/courses" className="btn-ghost shrink-0">
-            View All Programs →
-          </Link>
-        </div>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {courses.map((course, idx) => (
-            <ScrollReveal key={course.slug} animation="fade-up" delay={idx * 0.08}>
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.25 }}
-                className="card-light group flex flex-col overflow-hidden"
-              >
-                {/* Badge + rating row */}
-                <div className="p-5 pb-0 flex items-center justify-between">
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white ${course.badgeColor}`}>
-                    {course.badge}
-                  </span>
-                  <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
-                    <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    {course.rating}
-                  </div>
-                </div>
-
-                <div className="p-5 flex flex-col flex-1">
-                  <h3 className="font-heading text-base font-bold text-slate-800 group-hover:text-teal-700 transition-colors leading-snug">
-                    {course.title}
-                  </h3>
-
-                  <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {course.duration}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {course.students} students
-                    </span>
-                  </div>
-
-                  <div className="mt-1 text-[11px] font-medium text-slate-400">{course.level}</div>
-
-                  <ul className="mt-4 flex-1 space-y-2">
-                    {course.outcomes.map((o) => (
-                      <li key={o} className="flex items-start gap-2 text-xs text-slate-500">
-                        <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal-500" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                        {o}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-5 grid grid-cols-2 gap-2">
-                    <Link href={`/courses/${course.slug}`} className="rounded-xl border border-slate-200 py-2.5 text-center text-xs font-bold text-slate-600 hover:border-teal-400 hover:text-teal-600 transition-colors">
-                      Details
-                    </Link>
-                    <Link href="/contact" className="rounded-xl bg-teal-600 py-2.5 text-center text-xs font-bold text-white hover:bg-teal-700 transition-colors">
-                      Enroll Now
-                    </Link>
-                  </div>
-                </div>
+          </SlideIn>
+          <FadeIn delay={0.3}>
+            <MagneticButton>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} transition={ease.spring}>
+                <Link href="/courses" className="btn-ghost shrink-0">View All Programs →</Link>
               </motion.div>
-            </ScrollReveal>
-          ))}
+            </MagneticButton>
+          </FadeIn>
         </div>
 
-        {/* Training benefits strip */}
-        <div className="mt-12 rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50 to-white p-8">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { icon: "🎯", title: "100% Placement Assistance", desc: "Mock interviews, resume reviews, referrals" },
-              { icon: "👨‍🏫", title: "Expert Instructors", desc: "5–15 years of industry experience" },
-              { icon: "🏗️", title: "Real-World Projects", desc: "Build a portfolio you can showcase" },
-              { icon: "📅", title: "Flexible Scheduling", desc: "Weekday, weekend & evening batches" },
-            ].map((b) => (
-              <div key={b.title} className="flex items-start gap-3">
-                <span className="text-2xl">{b.icon}</span>
-                <div>
-                  <div className="text-xs font-bold text-slate-800">{b.title}</div>
-                  <div className="mt-0.5 text-xs text-slate-500">{b.desc}</div>
-                </div>
-              </div>
-            ))}
+        <StaggerContainer className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4" stagger={0.1} delay={0.1}>
+          {courses.map((course) => (
+            <StaggerItem key={course.slug}>
+              <TiltCard intensity={5}>
+                <motion.div
+                  whileHover={{ boxShadow: "0 20px 48px rgba(0,0,0,0.1), 0 0 0 1px rgba(13,148,136,0.15)" }}
+                  transition={{ duration: 0.3 }}
+                  className="card-light group flex flex-col overflow-hidden h-full"
+                >
+                  <div className="p-5 pb-0 flex items-center justify-between">
+                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white ${course.badgeColor}`}>
+                      {course.badge}
+                    </span>
+                    <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
+                      <motion.svg
+                        className="h-3.5 w-3.5 fill-current"
+                        viewBox="0 0 20 20"
+                        whileHover={{ scale: 1.3, rotate: 20 }}
+                        transition={ease.springBounce}
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </motion.svg>
+                      {course.rating}
+                    </div>
+                  </div>
+
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="font-heading text-base font-bold text-slate-800 group-hover:text-teal-700 transition-colors leading-snug">
+                      {course.title}
+                    </h3>
+                    <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-400">
+                      <span>⏱ {course.duration}</span>
+                      <span>👥 {course.students}</span>
+                    </div>
+                    <div className="mt-1 text-[11px] font-medium text-slate-400">{course.level}</div>
+                    <ul className="mt-4 flex-1 space-y-2">
+                      {course.outcomes.map((o) => (
+                        <li key={o} className="flex items-start gap-2 text-xs text-slate-500">
+                          <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal-500" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                          {o}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-5 grid grid-cols-2 gap-2">
+                      <Link href={`/courses/${course.slug}`} className="rounded-xl border border-slate-200 py-2.5 text-center text-xs font-bold text-slate-600 hover:border-teal-400 hover:text-teal-600 transition-colors">
+                        Details
+                      </Link>
+                      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={ease.spring}>
+                        <Link href="/contact" className="block rounded-xl bg-teal-600 py-2.5 text-center text-xs font-bold text-white hover:bg-teal-700 transition-colors">
+                          Enroll →
+                        </Link>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+              </TiltCard>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+
+        {/* Benefits strip */}
+        <FadeUp delay={0.2} className="mt-12">
+          <div className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50 to-white p-8">
+            <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" stagger={0.08}>
+              {[
+                { icon: "🎯", title: "100% Placement Assistance", desc: "Mock interviews, resume reviews, referrals" },
+                { icon: "👨‍🏫", title: "Expert Instructors", desc: "5–15 years of industry experience" },
+                { icon: "🏗️", title: "Real-World Projects", desc: "Build a portfolio you can showcase" },
+                { icon: "📅", title: "Flexible Scheduling", desc: "Weekday, weekend & evening batches" },
+              ].map((b) => (
+                <StaggerItem key={b.title}>
+                  <HoverLift lift={4}>
+                    <div className="flex items-start gap-3">
+                      <motion.span
+                        whileHover={{ scale: 1.3, rotate: 10 }}
+                        transition={ease.springBounce}
+                        className="text-2xl cursor-default"
+                      >
+                        {b.icon}
+                      </motion.span>
+                      <div>
+                        <div className="text-xs font-bold text-slate-800">{b.title}</div>
+                        <div className="mt-0.5 text-xs text-slate-500">{b.desc}</div>
+                      </div>
+                    </div>
+                  </HoverLift>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
           </div>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );
@@ -632,111 +645,60 @@ function Process() {
   return (
     <section className="border-y border-slate-100 bg-slate-50/40 py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-12 text-center">
+        <FadeUp className="mb-12 text-center">
           <span className="section-badge">How We Work</span>
-          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
-            Our Delivery Process
-          </h2>
+          <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">Our Delivery Process</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
             Transparent, structured, and built around your outcomes — not just deliverables.
           </p>
-        </div>
+        </FadeUp>
 
-        <ScrollReveal animation="stagger">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-            {steps.map((step, idx) => (
-              <motion.div
-                key={step.num}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.25 }}
-                className="card-light group p-6 text-center cursor-pointer"
-              >
-                <div className="mx-auto step-number">{step.num}</div>
-                <h3 className="mt-4 font-heading text-sm font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-xs leading-relaxed text-slate-500">{step.desc}</p>
-                {idx < steps.length - 1 && (
-                  <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 text-slate-200">
-                    →
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </ScrollReveal>
+        <StaggerContainer className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5" stagger={0.1}>
+          {steps.map((step, idx) => (
+            <StaggerItem key={step.num}>
+              <TiltCard intensity={4}>
+                <motion.div
+                  whileHover={{ boxShadow: "0 16px 40px rgba(13,148,136,0.1), 0 0 0 1px rgba(13,148,136,0.15)" }}
+                  transition={{ duration: 0.25 }}
+                  className="card-light group p-6 text-center h-full"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    transition={ease.springBounce}
+                    className="mx-auto step-number"
+                  >
+                    {step.num}
+                  </motion.div>
+                  <h3 className="mt-4 font-heading text-sm font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-xs leading-relaxed text-slate-500">{step.desc}</p>
+                </motion.div>
+              </TiltCard>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
       </div>
     </section>
   );
 }
-
-/* ─── Testimonials ──────────────────────────────────────────────────── */
-// function Testimonials() {
-//   return (
-//     <section className="bg-white py-24">
-//       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-//         <div className="mb-12 text-center">
-//           <span className="section-badge">Success Stories</span>
-//           <h2 className="mt-4 font-heading text-4xl md:text-5xl font-black text-slate-900">
-//             Outcomes, Not Just Opinions
-//           </h2>
-//           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
-//             Real results from engineers, founders, and professionals who chose Panacea.
-//           </p>
-//         </div>
-
-//         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-//           {testimonials.map((t, i) => (
-//             <motion.div
-//               key={i}
-//               initial={{ opacity: 0, y: 24 }}
-//               whileInView={{ opacity: 1, y: 0 }}
-//               viewport={{ once: true, margin: "-60px" }}
-//               transition={{ duration: 0.5, delay: i * 0.07 }}
-//               whileHover={{ y: -4 }}
-//               className="card-light p-6 flex flex-col"
-//             >
-//               <div className="flex gap-0.5">
-//                 {[1,2,3,4,5].map((s) => (
-//                   <svg key={s} className="h-4 w-4 text-amber-400 fill-current" viewBox="0 0 20 20">
-//                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-//                   </svg>
-//                 ))}
-//               </div>
-//               <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-600 italic">&ldquo;{t.text}&rdquo;</p>
-//               <div className="mt-5 flex items-center gap-3 border-t border-slate-100 pt-4">
-//                 <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${t.color} text-xs font-bold text-white`}>
-//                   {t.initials}
-//                 </div>
-//                 <div>
-//                   <div className="text-sm font-bold text-slate-800">{t.name}</div>
-//                   <div className="text-[11px] text-slate-400">{t.role} · {t.company}</div>
-//                 </div>
-//               </div>
-//             </motion.div>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
 
 /* ─── FAQ ───────────────────────────────────────────────────────────── */
 function FAQ() {
   return (
     <section className="border-y border-slate-100 bg-slate-50/50 py-24">
       <div className="mx-auto max-w-4xl px-6 lg:px-8">
-        <div className="mb-12 text-center">
+        <FadeUp className="mb-12 text-center">
           <span className="section-badge">FAQ</span>
-          <h2 className="mt-4 font-heading text-4xl font-black text-slate-900">
-            Common Questions
-          </h2>
-        </div>
-        <div className="space-y-3">
+          <h2 className="mt-4 font-heading text-4xl font-black text-slate-900">Common Questions</h2>
+        </FadeUp>
+        <StaggerContainer className="space-y-3" stagger={0.07}>
           {faqs.map((faq) => (
-            <FAQItem key={faq.q} question={faq.q} answer={faq.a} />
+            <StaggerItem key={faq.q}>
+              <FAQItem question={faq.q} answer={faq.a} />
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
@@ -745,27 +707,33 @@ function FAQ() {
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className={`rounded-2xl border transition-all duration-200 ${open ? "border-teal-200 bg-white shadow-sm" : "border-slate-200 bg-white/60"}`}>
-      <button
+    <motion.div
+      animate={{ borderColor: open ? "rgba(13,148,136,0.35)" : "rgba(226,232,240,1)" }}
+      transition={{ duration: 0.2 }}
+      className="rounded-2xl border bg-white overflow-hidden"
+    >
+      <motion.button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between gap-4 p-5 text-left focus:outline-none"
+        whileHover={{ backgroundColor: "rgba(248,250,252,1)" }}
+        transition={{ duration: 0.15 }}
+        className="flex w-full items-center justify-between gap-4 p-5 text-left"
       >
         <span className="font-heading text-sm font-semibold text-slate-800">{question}</span>
         <motion.span
-          animate={{ rotate: open ? 45 : 0 }}
+          animate={{ rotate: open ? 45 : 0, color: open ? "#0d9488" : "#94a3b8" }}
           transition={{ duration: 0.2 }}
-          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-lg font-light transition-colors ${open ? "border-teal-500 text-teal-600" : "border-slate-200 text-slate-400"}`}
+          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-current text-lg font-light"
         >
           +
         </motion.span>
-      </button>
+      </motion.button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
+            transition={{ duration: 0.28, ease: ease.premium }}
             className="overflow-hidden"
           >
             <p className="border-t border-slate-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-slate-500">
@@ -774,7 +742,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
@@ -783,49 +751,57 @@ function CTA() {
   return (
     <section className="relative overflow-hidden bg-[#020817] py-24">
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[700px] rounded-full bg-teal-600/20 blur-[120px]" />
+        <FloatingOrb className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[700px] rounded-full bg-teal-600/20 blur-[120px]" delay={0} duration={10} />
         <div className="absolute inset-0 bg-grid-dark" />
       </div>
       <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="section-badge-dark mb-4 inline-flex">
-            Ready to Build?
-          </span>
+        <ScaleIn>
+          <span className="section-badge-dark mb-4 inline-flex">Ready to Build?</span>
           <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight">
-            Let's Build Something
+            <TextReveal text="Let's Build Something" delay={0.1} />
             <br />
-            <span className="text-gradient-hero">Extraordinary Together</span>
+            <span className="text-gradient-hero">
+              <TextReveal text="Extraordinary Together" delay={0.45} />
+            </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-400">
-            Whether you're launching a startup, scaling an enterprise, or transforming your career — we're your partner in every step.
-          </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link href="/contact" className="btn-primary glow-teal-btn text-sm">
-              Start a Project
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
-            <Link href="/courses" className="btn-ghost-dark text-sm">
-              Enroll in Training
-            </Link>
-          </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
+          <FadeUp delay={0.6}>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-400">
+              Whether you're launching a startup, scaling an enterprise, or transforming your career — we're your partner in every step.
+            </p>
+          </FadeUp>
+          <FadeUp delay={0.75} className="mt-10 flex flex-wrap justify-center gap-4">
+            <MagneticButton>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} transition={ease.spring}>
+                <Link href="/contact" className="btn-primary glow-teal-btn text-sm">
+                  Start a Project
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              </motion.div>
+            </MagneticButton>
+            <MagneticButton>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} transition={ease.spring}>
+                <Link href="/courses" className="btn-ghost-dark text-sm">Enroll in Training</Link>
+              </motion.div>
+            </MagneticButton>
+          </FadeUp>
+          <FadeUp delay={0.9} className="mt-8 flex flex-wrap items-center justify-center gap-6">
             {["Free initial consultation", "No commitment required", "Response within 24 hours"].map((t) => (
-              <div key={t} className="flex items-center gap-1.5 text-xs text-slate-500">
+              <motion.div
+                key={t}
+                whileHover={{ scale: 1.05 }}
+                transition={ease.spring}
+                className="flex items-center gap-1.5 text-xs text-slate-500"
+              >
                 <svg className="h-3.5 w-3.5 text-teal-500" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
                 {t}
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </motion.div>
+          </FadeUp>
+        </ScaleIn>
       </div>
     </section>
   );

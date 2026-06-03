@@ -90,22 +90,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-12">
           {/* Brand column */}
           <div className="lg:col-span-4 space-y-6">
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="inline-flex group">
               <Image
                 src="/assets/logo.png"
                 alt="Panacea Solution Pvt. Ltd."
-                width={180}
-                height={52}
-                className="h-12 w-auto object-contain brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity duration-200"
+                width={220}
+                height={64}
+                className="h-16 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-200"
               />
-              <div className="leading-tight">
-                <div className="font-heading text-sm font-extrabold tracking-tight text-white">
-                  Panacea Solution
-                </div>
-                <div className="text-[9px] font-medium tracking-wide text-slate-500">
-                  Pvt. Ltd.
-                </div>
-              </div>
             </Link>
 
             <p className="text-xs leading-relaxed text-slate-400 max-w-xs">
