@@ -96,7 +96,7 @@ const team = [
   },
   {
     name: "Himani Bhattarai",
-    role: "Creative Head",
+    role: "Operations Lead",
     desc: "Shapes the brand identity and creative direction of Panacea — blending storytelling, aesthetics, and strategy into every touchpoint.",
     color: "from-violet-600 to-violet-400",
     initials: "HB",
