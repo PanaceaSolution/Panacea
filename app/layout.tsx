@@ -35,7 +35,7 @@ export const metadata: Metadata = {
       "Build enterprise-grade software, transform your digital presence, or launch a career in tech — with Nepal's most trusted technology partner.",
     images: [
       {
-        url: "/public/assets/logo.png",
+        url: "/assets/logo.png",
         width: 1200,
         height: 630,
         alt: "Panacea Solution Pvt. Ltd.",
@@ -49,9 +49,9 @@ export const metadata: Metadata = {
       "Build enterprise-grade software and launch tech careers with Nepal's most trusted technology partner.",
   },
   icons: {
-    icon: "/assets/logo.png",
+    icon: [{ url: "/assets/logo.png", type: "image/png" }],
     shortcut: "/assets/logo.png",
-    apple: "/assets/logo.png",
+    apple: [{ url: "/assets/logo.png", type: "image/png" }],
   },
   robots: {
     index: true,
@@ -66,6 +66,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="icon" href="/assets/logo.png" type="image/png" />
+        <link rel="shortcut icon" href="/assets/logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/assets/logo.png" />
+      </head>
       <body className="antialiased min-h-screen bg-white selection:bg-teal-500/20 selection:text-teal-900">
         <ScrollProgress />
         <PageTransition>{children}</PageTransition>
