@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "../components/ScrollReveal";
 import Link from "next/link";
@@ -210,10 +211,12 @@ function ServicesGrid() {
               <div className={`grid gap-0 md:grid-cols-[320px_1fr] ${idx % 2 !== 0 ? "md:[direction:rtl]" : ""}`}>
                 {/* Image */}
                 <div className={`relative overflow-hidden bg-slate-100 h-56 md:h-auto ${idx % 2 !== 0 ? "md:[direction:ltr]" : ""}`}>
-                  <img
+                  <Image
                     src={service.image}
                     alt={service.title}
-                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 320px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-transparent" />
                   <div className={`absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-xl ${service.color} shadow-lg`}>

@@ -118,8 +118,8 @@ const milestones = [
   },
   {
     year: "2020",
-    title: "First 20 Clients",
-    desc: "Despite global challenges, we delivered 20+ projects ranging from e-commerce platforms to custom ERP solutions, earning our first long-term retainers.",
+    title: "First 10 Clients",
+    desc: "Despite global challenges, we delivered 10+ projects ranging from e-commerce platforms to custom ERP solutions, earning our first long-term retainers.",
   },
   {
     year: "2021",
@@ -133,7 +133,7 @@ const milestones = [
   },
   {
     year: "2023",
-    title: "1,000 Students Trained",
+    title: "100 Students Trained",
     desc: "Our training programs hit a landmark: 1,000 graduates placed in tech roles at companies like Leapfrog, CloudFactory, Fusemachines, and F1Soft.",
   },
   {

@@ -201,14 +201,14 @@ function Hero() {
 
   const containerVariants = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+    visible: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
+    hidden: { opacity: 0, y: 28 },
     visible: {
-      opacity: 1, y: 0, filter: "blur(0px)",
-      transition: { duration: 0.8, ease: ease.premium },
+      opacity: 1, y: 0,
+      transition: { duration: 0.5, ease: ease.premium },
     },
   };
 
@@ -295,7 +295,7 @@ function Hero() {
                 key={s.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.9 + i * 0.1, ease: ease.premium }}
+                transition={{ duration: 0.4, delay: 0.5 + i * 0.07, ease: ease.premium }}
                 whileHover={{ backgroundColor: "rgba(255,255,255,0.06)" }}
                 className="flex flex-col items-center gap-1 px-6 py-6 transition-colors duration-200"
               >

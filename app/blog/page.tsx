@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -121,10 +122,13 @@ export default function BlogPage() {
           >
             <div className="grid gap-0 md:grid-cols-[380px_1fr]">
               <div className="relative h-56 overflow-hidden bg-slate-100 md:h-full">
-                <img
+                <Image
                   src={featured.image}
                   alt={featured.title}
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 380px"
+                  priority
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <span className="absolute left-4 top-4 rounded-full bg-teal-600 px-3 py-1 text-[10px] font-bold text-white">
                   {featured.category}
@@ -196,10 +200,12 @@ export default function BlogPage() {
                     className="card-light overflow-hidden group"
                   >
                     <div className="relative h-48 overflow-hidden bg-slate-100">
-                      <img
+                      <Image
                         src={article.image}
                         alt={article.title}
-                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        fill
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute left-3 top-3 flex items-center justify-between w-[calc(100%-24px)]">
                         <span className="rounded-full bg-white/92 px-2.5 py-1 text-[10px] font-bold text-teal-600 shadow-sm backdrop-blur-sm">

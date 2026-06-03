@@ -1,8 +1,24 @@
 import type { Metadata } from "next";
+import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import PageTransition from "./components/PageTransition";
 import ScrollProgress from "./components/ScrollProgress";
 import { JsonLd } from "./components/JsonLd";
 import "./globals.css";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  style: ["normal", "italic"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
 
 const BASE_URL = "https://panaceasolution.com";
 
@@ -33,9 +49,7 @@ export const metadata: Metadata = {
   creator: "Panacea Solution Pvt. Ltd.",
   publisher: "Panacea Solution Pvt. Ltd.",
   category: "Technology",
-  alternates: {
-    canonical: BASE_URL,
-  },
+  alternates: { canonical: BASE_URL },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -44,20 +58,12 @@ export const metadata: Metadata = {
     title: "Panacea Solution | Software Development & Tech Training in Nepal",
     description:
       "Build enterprise software, transform your digital presence, or launch a tech career with Nepal's most trusted technology partner.",
-    images: [
-      {
-        url: "/assets/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Panacea Solution Pvt. Ltd. — Software Development & Tech Training",
-      },
-    ],
+    images: [{ url: "/assets/logo.png", width: 1200, height: 630, alt: "Panacea Solution Pvt. Ltd." }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Panacea Solution | Software Development & Tech Training in Nepal",
-    description:
-      "Build enterprise software and launch tech careers with Nepal's most trusted technology partner.",
+    description: "Build enterprise software and launch tech careers with Nepal's most trusted technology partner.",
     images: ["/assets/logo.png"],
   },
   icons: {
@@ -70,26 +76,16 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
-  verification: {
-    // google: "your-google-site-verification-code",
-  },
 };
 
-/* ── Global JSON-LD schemas ─────────────────────────────────────── */
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": `${BASE_URL}/#organization`,
   name: "Panacea Solution Pvt. Ltd.",
   url: BASE_URL,
-  logo: {
-    "@type": "ImageObject",
-    url: `${BASE_URL}/assets/logo.png`,
-    width: 220,
-    height: 64,
-  },
-  description:
-    "Nepal's premier technology company specializing in enterprise software development, mobile apps, UI/UX design, digital marketing, and professional tech training programs.",
+  logo: { "@type": "ImageObject", url: `${BASE_URL}/assets/logo.png`, width: 220, height: 64 },
+  description: "Nepal's premier technology company specialising in enterprise software, mobile apps, UI/UX design, digital marketing, and professional tech training.",
   foundingDate: "2019",
   address: {
     "@type": "PostalAddress",
@@ -100,17 +96,8 @@ const organizationSchema = {
     postalCode: "44600",
   },
   contactPoint: [
-    {
-      "@type": "ContactPoint",
-      contactType: "customer service",
-      email: "info@panaceasolution.com",
-      availableLanguage: ["English", "Nepali"],
-    },
-    {
-      "@type": "ContactPoint",
-      contactType: "sales",
-      email: "career@panaceasolution.com",
-    },
+    { "@type": "ContactPoint", contactType: "customer service", email: "info@panaceasolution.com", availableLanguage: ["English", "Nepali"] },
+    { "@type": "ContactPoint", contactType: "sales", email: "career@panaceasolution.com" },
   ],
   sameAs: [
     "https://www.facebook.com/panaceasolutionnepal",
@@ -134,22 +121,11 @@ const localBusinessSchema = {
     addressRegion: "Bagmati Province",
     addressCountry: "NP",
   },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: "27.6915",
-    longitude: "85.3353",
-  },
+  geo: { "@type": "GeoCoordinates", latitude: "27.6915", longitude: "85.3353" },
   openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "10:00",
-      closes: "18:00",
-    },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "10:00", closes: "18:00" },
   ],
   priceRange: "$$",
-  currenciesAccepted: "NPR",
-  paymentAccepted: "Cash, Bank Transfer",
 };
 
 const websiteSchema = {
@@ -158,7 +134,6 @@ const websiteSchema = {
   "@id": `${BASE_URL}/#website`,
   url: BASE_URL,
   name: "Panacea Solution",
-  description: "Enterprise software development and tech training in Nepal.",
   publisher: { "@id": `${BASE_URL}/#organization` },
   potentialAction: {
     "@type": "SearchAction",
@@ -169,7 +144,7 @@ const websiteSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${outfit.variable} ${jakarta.variable}`}>
       <head>
         <link rel="icon" href="/assets/logo.png" type="image/png" />
         <link rel="shortcut icon" href="/assets/logo.png" type="image/png" />

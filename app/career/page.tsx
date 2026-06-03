@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -300,10 +301,12 @@ function Culture() {
                 className="card-light overflow-hidden group"
               >
                 <div className="relative h-40 overflow-hidden bg-slate-100">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.title}
-                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>

@@ -5,97 +5,52 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
-  useInView,
   type Variants,
 } from "framer-motion";
 import { ReactNode, useRef, MouseEvent } from "react";
 
-/* ── Easing curves ─────────────────────────────────────────────── */
+/* ── Easing ────────────────────────────────────────────────────── */
 export const ease = {
-  premium: [0.25, 0.46, 0.45, 0.94] as const,
-  spring: { type: "spring" as const, stiffness: 280, damping: 24 },
-  springSnappy: { type: "spring" as const, stiffness: 400, damping: 28 },
-  springBounce: { type: "spring" as const, stiffness: 260, damping: 18 },
+  premium: [0.22, 0.61, 0.36, 1] as const,      // snappier than cubic-bezier ease-out
+  spring: { type: "spring" as const, stiffness: 320, damping: 26 },
+  springSnappy: { type: "spring" as const, stiffness: 420, damping: 30 },
+  springBounce: { type: "spring" as const, stiffness: 340, damping: 20 },
 };
 
 /* ── Shared variants ───────────────────────────────────────────── */
+// No blur — blur on every card is expensive; keep it only for hero headline
 export const fadeUpVariants: Variants = {
-  hidden: { opacity: 0, y: 32, filter: "blur(8px)" },
-  visible: {
-    opacity: 1, y: 0, filter: "blur(0px)",
-    transition: { duration: 0.65, ease: ease.premium },
-  },
-};
-
-export const fadeInVariants: Variants = {
-  hidden: { opacity: 0, filter: "blur(6px)" },
-  visible: {
-    opacity: 1, filter: "blur(0px)",
-    transition: { duration: 0.55, ease: ease.premium },
-  },
-};
-
-export const slideLeftVariants: Variants = {
-  hidden: { opacity: 0, x: -48, filter: "blur(8px)" },
-  visible: {
-    opacity: 1, x: 0, filter: "blur(0px)",
-    transition: { duration: 0.7, ease: ease.premium },
-  },
-};
-
-export const slideRightVariants: Variants = {
-  hidden: { opacity: 0, x: 48, filter: "blur(8px)" },
-  visible: {
-    opacity: 1, x: 0, filter: "blur(0px)",
-    transition: { duration: 0.7, ease: ease.premium },
-  },
-};
-
-export const scaleInVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.88, filter: "blur(6px)" },
-  visible: {
-    opacity: 1, scale: 1, filter: "blur(0px)",
-    transition: { duration: 0.6, ease: ease.premium },
-  },
-};
-
-export const staggerContainerVariants: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: ease.premium } },
 };
 
 export const staggerItemVariants: Variants = {
-  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
-  visible: {
-    opacity: 1, y: 0, filter: "blur(0px)",
-    transition: { duration: 0.6, ease: ease.premium },
-  },
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: ease.premium } },
 };
+
+/* ── Reduced-motion guard ──────────────────────────────────────── */
+function shouldAnimate() {
+  if (typeof window === "undefined") return true;
+  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 /* ── FadeUp ────────────────────────────────────────────────────── */
 export function FadeUp({
   children,
   delay = 0,
   className = "",
-  once = true,
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
-  once?: boolean;
 }) {
   return (
     <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once, margin: "-60px" }}
-      variants={{
-        hidden: { opacity: 0, y: 32, filter: "blur(8px)" },
-        visible: {
-          opacity: 1, y: 0, filter: "blur(0px)",
-          transition: { duration: 0.65, delay, ease: ease.premium },
-        },
-      }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.45, delay, ease: ease.premium }}
       className={className}
     >
       {children}
@@ -115,10 +70,10 @@ export function FadeIn({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay, ease: ease.premium }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.4, delay, ease: ease.premium }}
       className={className}
     >
       {children}
@@ -139,18 +94,18 @@ export function SlideIn({
   className?: string;
 }) {
   const initial = {
-    left:  { opacity: 0, x: -56, filter: "blur(8px)" },
-    right: { opacity: 0, x: 56,  filter: "blur(8px)" },
-    up:    { opacity: 0, y: -40, filter: "blur(8px)" },
-    down:  { opacity: 0, y: 40,  filter: "blur(8px)" },
+    left:  { opacity: 0, x: -40 },
+    right: { opacity: 0, x: 40 },
+    up:    { opacity: 0, y: -30 },
+    down:  { opacity: 0, y: 30 },
   }[direction];
 
   return (
     <motion.div
       initial={initial}
-      whileInView={{ opacity: 1, x: 0, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, delay, ease: ease.premium }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay, ease: ease.premium }}
       className={className}
     >
       {children}
@@ -163,7 +118,7 @@ export function StaggerContainer({
   children,
   className = "",
   delay = 0,
-  stagger = 0.1,
+  stagger = 0.07,
 }: {
   children: ReactNode;
   className?: string;
@@ -174,7 +129,7 @@ export function StaggerContainer({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-60px" }}
       variants={{
         hidden: {},
         visible: { transition: { staggerChildren: stagger, delayChildren: delay } },
@@ -201,11 +156,11 @@ export function StaggerItem({
   );
 }
 
-/* ── TiltCard ──────────────────────────────────────────────────── */
+/* ── TiltCard — lightweight, GPU-friendly ──────────────────────── */
 export function TiltCard({
   children,
   className = "",
-  intensity = 6,
+  intensity = 5,
 }: {
   children: ReactNode;
   className?: string;
@@ -214,30 +169,30 @@ export function TiltCard({
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-100, 100], [intensity, -intensity]), { stiffness: 300, damping: 30 });
-  const rotateY = useSpring(useTransform(x, [-100, 100], [-intensity, intensity]), { stiffness: 300, damping: 30 });
-  const scale = useSpring(1, { stiffness: 300, damping: 30 });
+  // useSpring keeps transform on compositor thread
+  const rotateX = useSpring(useTransform(y, [-80, 80], [intensity, -intensity]), { stiffness: 280, damping: 28 });
+  const rotateY = useSpring(useTransform(x, [-80, 80], [-intensity, intensity]), { stiffness: 280, damping: 28 });
+  const scale   = useSpring(1, { stiffness: 280, damping: 28 });
 
-  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    x.set(e.clientX - rect.left - rect.width / 2);
-    y.set(e.clientY - rect.top - rect.height / 2);
+  function onMove(e: MouseEvent<HTMLDivElement>) {
+    if (!shouldAnimate()) return;
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    x.set(e.clientX - r.left - r.width / 2);
+    y.set(e.clientY - r.top  - r.height / 2);
     scale.set(1.02);
   }
 
-  function handleMouseLeave() {
-    x.set(0);
-    y.set(0);
-    scale.set(1);
+  function onLeave() {
+    x.set(0); y.set(0); scale.set(1);
   }
 
   return (
     <motion.div
       ref={ref}
-      style={{ rotateX, rotateY, scale, transformPerspective: 900 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, scale, transformPerspective: 800, willChange: "transform" }}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
       className={className}
     >
       {children}
@@ -249,7 +204,7 @@ export function TiltCard({
 export function MagneticButton({
   children,
   className = "",
-  strength = 0.25,
+  strength = 0.22,
 }: {
   children: ReactNode;
   className?: string;
@@ -257,19 +212,18 @@ export function MagneticButton({
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 350, damping: 20 });
-  const springY = useSpring(y, { stiffness: 350, damping: 20 });
-
-  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    x.set((e.clientX - rect.left - rect.width / 2) * strength);
-    y.set((e.clientY - rect.top - rect.height / 2) * strength);
-  }
+  const sx = useSpring(x, { stiffness: 380, damping: 22 });
+  const sy = useSpring(y, { stiffness: 380, damping: 22 });
 
   return (
     <motion.div
-      style={{ x: springX, y: springY }}
-      onMouseMove={handleMouseMove}
+      style={{ x: sx, y: sy, willChange: "transform" }}
+      onMouseMove={(e: MouseEvent<HTMLDivElement>) => {
+        if (!shouldAnimate()) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        x.set((e.clientX - r.left - r.width  / 2) * strength);
+        y.set((e.clientY - r.top  - r.height / 2) * strength);
+      }}
       onMouseLeave={() => { x.set(0); y.set(0); }}
       className={className}
     >
@@ -278,12 +232,12 @@ export function MagneticButton({
   );
 }
 
-/* ── TextReveal ────────────────────────────────────────────────── */
+/* ── TextReveal — only used for hero headlines ─────────────────── */
 export function TextReveal({
   text,
   className = "",
   delay = 0,
-  wordDelay = 0.07,
+  wordDelay = 0.06,
 }: {
   text: string;
   className?: string;
@@ -292,19 +246,18 @@ export function TextReveal({
 }) {
   const words = text.split(" ");
   return (
-    <span className={className} style={{ display: "inline" }}>
+    <span className={className}>
       {words.map((word, i) => (
-        <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom", marginRight: "0.28em" }}>
+        <span
+          key={i}
+          style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom", marginRight: "0.27em" }}
+        >
           <motion.span
-            initial={{ y: "110%", opacity: 0 }}
+            initial={{ y: "105%", opacity: 0 }}
             whileInView={{ y: "0%", opacity: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{
-              duration: 0.6,
-              delay: delay + i * wordDelay,
-              ease: ease.premium,
-            }}
-            style={{ display: "inline-block" }}
+            viewport={{ once: true, margin: "-30px" }}
+            transition={{ duration: 0.5, delay: delay + i * wordDelay, ease: ease.premium }}
+            style={{ display: "inline-block", willChange: "transform" }}
           >
             {word}
           </motion.span>
@@ -314,11 +267,11 @@ export function TextReveal({
   );
 }
 
-/* ── FloatingOrb ───────────────────────────────────────────────── */
+/* ── FloatingOrb — throttled to 60fps via CSS animation ────────── */
 export function FloatingOrb({
   className = "",
   delay = 0,
-  duration = 8,
+  duration = 9,
 }: {
   className?: string;
   delay?: number;
@@ -327,8 +280,9 @@ export function FloatingOrb({
   return (
     <motion.div
       className={className}
-      animate={{ y: [0, -20, 0], scale: [1, 1.05, 1], opacity: [0.6, 0.8, 0.6] }}
-      transition={{ duration, delay, repeat: Infinity, ease: "easeInOut" }}
+      animate={{ y: [0, -16, 0], opacity: [0.55, 0.75, 0.55] }}
+      transition={{ duration, delay, repeat: Infinity, ease: "easeInOut", repeatType: "loop" }}
+      style={{ willChange: "transform, opacity" }}
     />
   );
 }
@@ -338,8 +292,9 @@ export function PulseGlow({ className = "" }: { className?: string }) {
   return (
     <motion.div
       className={className}
-      animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.7, 0.4] }}
-      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      animate={{ scale: [1, 1.18, 1], opacity: [0.45, 0.75, 0.45] }}
+      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+      style={{ willChange: "transform, opacity" }}
     />
   );
 }
@@ -356,10 +311,10 @@ export function ScaleIn({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.85, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.65, delay, ease: ease.premium }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.45, delay, ease: ease.premium }}
       className={className}
     >
       {children}
@@ -371,7 +326,7 @@ export function ScaleIn({
 export function HoverLift({
   children,
   className = "",
-  lift = 6,
+  lift = 5,
 }: {
   children: ReactNode;
   className?: string;
@@ -379,7 +334,9 @@ export function HoverLift({
 }) {
   return (
     <motion.div
-      whileHover={{ y: -lift, transition: { duration: 0.25, ease: ease.premium } }}
+      whileHover={{ y: -lift }}
+      transition={{ duration: 0.2, ease: ease.premium }}
+      style={{ willChange: "transform" }}
       className={className}
     >
       {children}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "../components/ScrollReveal";
 import Link from "next/link";
@@ -54,8 +55,6 @@ const courses = [
       "Git, GitHub & CI/CD basics",
     ],
     outcomes: ["Build 5+ real-world projects", "Deploy to AWS / Vercel", "100% placement assistance"],
-    instructor: "Dipesh Thapa",
-    instructorExp: "8+ years",
   },
   {
     title: "Python & Data Science",
@@ -76,8 +75,6 @@ const courses = [
       "Capstone project portfolio",
     ],
     outcomes: ["Kaggle competition certification", "ML model deployment", "Data analyst job-ready portfolio"],
-    instructor: "Priya Sharma",
-    instructorExp: "10+ years",
   },
   {
     title: "Mobile App Development",
@@ -98,8 +95,6 @@ const courses = [
       "Play Store & App Store deployment",
     ],
     outcomes: ["Publish on App Store & Play Store", "3+ production apps in portfolio", "Cross-platform expertise"],
-    instructor: "Amit Verma",
-    instructorExp: "7+ years",
   },
   {
     title: "Digital Marketing Mastery",
@@ -120,8 +115,6 @@ const courses = [
       "Content strategy & copywriting",
     ],
     outcomes: ["Manage ₹10L+ ad budget", "Google Ads certified", "Full-funnel campaign delivery"],
-    instructor: "Rahul Gupta",
-    instructorExp: "9+ years",
   },
 ];
 
@@ -313,10 +306,12 @@ function CoursesGrid() {
             >
               {/* Image */}
               <div className="relative h-52 overflow-hidden bg-slate-100">
-                <img
+                <Image
                   src={course.image}
                   alt={course.title}
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <span className={`absolute left-4 top-4 rounded-full px-3 py-1 text-[10px] font-bold text-white ${course.badgeColor}`}>
@@ -371,16 +366,6 @@ function CoursesGrid() {
                         </li>
                       ))}
                     </ul>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 border-t border-slate-100 pt-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-100 text-[11px] font-bold text-teal-700">
-                    {course.instructor.split(" ").map(w => w[0]).join("")}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-700">{course.instructor}</div>
-                    <div className="text-[10px] text-slate-400">{course.instructorExp} industry experience</div>
                   </div>
                 </div>
 
